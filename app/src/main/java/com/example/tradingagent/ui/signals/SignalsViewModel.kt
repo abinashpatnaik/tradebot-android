@@ -15,8 +15,9 @@ data class Signal(
     val price: Double,
     val changePct: Double,
     val trendScore: Double,
-    val signal: String,     // "BUY", "SELL", "HOLD"
+    val signal: String,     // "BUY", "SELL", "HOLD", "GATED"
     val aiDecision: String, // "APPROVED", "REJECTED", "IDLE", "OFF"
+    val holdReason: String?,
 )
 
 data class SignalsUiState(
@@ -45,12 +46,17 @@ class SignalsViewModel : ViewModel() {
         viewModelScope.launch { repository.refresh() }
     }
 
-    private fun ApiSignal.toUiSignal(): Signal = Signal(
-        symbol = symbol,
-        price = price ?: 0.0,
-        changePct = changePct ?: 0.0,
-        trendScore = combinedScore ?: trendScore ?: 0.0,
-        signal = signal ?: "HOLD",
-        aiDecision = aiDecision ?: "OFF",
-    )
+    private fun ApiSignal.toUiSignal(): Signal {
+        val score = combinedScore ?: trendScore ?: 0.0
+        val isGated = signal == "HOLD" && !holdReason.isNullOrBlank() && score >= (buyThreshold ?: 0.48)
+        return Signal(
+            symbol = symbol,
+            price = price ?: 0.0,
+            changePct = changePct ?: 0.0,
+            trendScore = score,
+            signal = if (isGated) "GATED" else (signal ?: "HOLD"),
+            aiDecision = aiDecision ?: "OFF",
+            holdReason = if (isGated) holdReason else null,
+        )
+    }
 }

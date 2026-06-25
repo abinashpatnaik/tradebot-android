@@ -10,6 +10,7 @@ val LossRed = Color(0xFFF44336)
 val SignalBuyGreen = Color(0xFF4CAF50)
 val SignalWarmingOrange = Color(0xFFFF9800)
 val SignalNeutralGray = Color(0xFF9E9E9E)
+val SignalGatedAmber = Color(0xFFF59E0B)
 val SignalCoolingBlue = Color(0xFF87CEEB)
 val SignalSellRed = Color(0xFFF44336)
 

@@ -93,6 +93,7 @@ data class Signal(
     @SerialName("sellThreshold") val sellThreshold: Double? = null,
     @SerialName("aiDecision") val aiDecision: String? = null,  // "APPROVED", "REJECTED", "IDLE", "OFF"
     @SerialName("aiReason") val aiReason: String? = null,
+    @SerialName("holdReason") val holdReason: String? = null,
     @SerialName("updated_at") val updatedAt: String? = null
 )
 

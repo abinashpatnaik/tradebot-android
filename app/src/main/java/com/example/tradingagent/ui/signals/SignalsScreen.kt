@@ -40,6 +40,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.tradingagent.theme.LossRed
 import com.example.tradingagent.theme.ProfitGreen
 import com.example.tradingagent.theme.SignalBuyGreen
+import com.example.tradingagent.theme.SignalGatedAmber
 import com.example.tradingagent.theme.SignalCoolingBlue
 import com.example.tradingagent.theme.SignalNeutralGray
 import com.example.tradingagent.theme.SignalSellRed
@@ -177,10 +178,20 @@ private fun SignalCard(signal: Signal) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                SignalBadge(
-                    label = signal.signal,
-                    color = getSignalColor(signal.signal),
-                )
+                Column {
+                    SignalBadge(
+                        label = signal.signal,
+                        color = getSignalColor(signal.signal),
+                    )
+                    if (signal.signal == "GATED" && signal.holdReason != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = formatHoldReason(signal.holdReason),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = SignalGatedAmber
+                        )
+                    }
+                }
                 AiDecisionBadge(
                     label = "AI: ${signal.aiDecision}",
                     decision = signal.aiDecision,
@@ -278,6 +289,21 @@ private fun getSignalColor(signal: String): Color {
     return when (signal) {
         "BUY" -> SignalBuyGreen
         "SELL" -> SignalSellRed
+        "GATED" -> SignalGatedAmber
         else -> SignalNeutralGray
+    }
+}
+
+private fun formatHoldReason(reason: String): String {
+    return when {
+        reason.contains("ADX=") -> {
+            val adxMatch = Regex("ADX=([\\d.]+)").find(reason)
+            "⚡ ADX ${adxMatch?.groupValues?.getOrNull(1) ?: ""} (>25)"
+        }
+        reason.contains("volume") -> {
+            val volMatch = Regex("([\\d.]+)x average").find(reason)
+            "📊 Vol ${volMatch?.groupValues?.getOrNull(1) ?: ""}x (>1.5x)"
+        }
+        else -> reason.take(40)
     }
 }
