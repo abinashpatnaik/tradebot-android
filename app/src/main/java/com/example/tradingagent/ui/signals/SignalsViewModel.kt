@@ -49,7 +49,7 @@ class SignalsViewModel : ViewModel() {
         symbol = symbol,
         price = price ?: 0.0,
         changePct = changePct ?: 0.0,
-        trendScore = trendScore ?: combinedScore ?: 0.0,
+        trendScore = combinedScore ?: trendScore ?: 0.0,
         signal = signal ?: "HOLD",
         aiDecision = aiDecision ?: "OFF",
     )
