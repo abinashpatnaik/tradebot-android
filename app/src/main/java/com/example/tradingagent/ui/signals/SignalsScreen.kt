@@ -98,7 +98,7 @@ fun SignalsScreen(
 
 @Composable
 private fun SignalCard(signal: Signal) {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
     }

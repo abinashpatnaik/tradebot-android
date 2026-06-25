@@ -112,7 +112,7 @@ private fun PositionsSummary(
     positions: List<Position>,
     modifier: Modifier = Modifier,
 ) {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
     }
@@ -156,7 +156,7 @@ private fun PositionsSummary(
 
 @Composable
 private fun PositionCard(position: Position) {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
     }

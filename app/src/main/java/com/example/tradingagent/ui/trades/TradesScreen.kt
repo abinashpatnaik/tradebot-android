@@ -161,7 +161,7 @@ private fun DateHeader(date: String) {
 
 @Composable
 private fun TradeRow(trade: Trade) {
-    val currencyFormat = NumberFormat.getCurrencyInstance(Locale("en", "IN")).apply {
+    val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
     }
