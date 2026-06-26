@@ -135,7 +135,9 @@ fun StockDetailsScreen(
                     item {
                         details.summary?.let { summary ->
                             Spacer(modifier = Modifier.height(8.dp))
-                            StockSummaryCard(summary)
+                            val closedTrades = details.trades.filter { it.pnl != null }
+                            val winRate = if (closedTrades.isEmpty()) 0.0 else (closedTrades.count { it.pnl?.toDoubleOrNull() ?: 0.0 > 0 } / closedTrades.size.toDouble()) * 100
+                            StockSummaryCard(summary, details.trades.size, winRate)
                         }
                     }
 
@@ -193,13 +195,16 @@ fun StockLineChart(
     val primaryColor = MaterialTheme.colorScheme.primary
     
     // Determine color based on trend (first vs last)
-    val startPrice = data.first().price
-    val endPrice = data.last().price
+    val validData = data.filter { it.price != null }
+    val startPrice = validData.firstOrNull()?.price ?: 0.0
+    val endPrice = validData.lastOrNull()?.price ?: 0.0   
     val lineColor = if (endPrice >= startPrice) ProfitGreen else LossRed
 
     Canvas(modifier = modifier) {
-        val maxPrice = data.maxOf { it.price }
-        val minPrice = data.minOf { it.price }
+        val validPrices = data.mapNotNull { it.price }
+        if (validPrices.isEmpty()) return@Canvas
+        val maxPrice = validPrices.maxOrNull() ?: 0.0
+        val minPrice = validPrices.minOrNull() ?: 0.0
         val priceRange = maxPrice - minPrice
         
         // Prevent division by zero if all prices are the same
@@ -213,7 +218,8 @@ fun StockLineChart(
         val path = Path()
 
         data.forEachIndexed { index, point ->
-            val normalizedY = ((point.price - minPrice) / range).toFloat()
+            val price = point.price ?: return@forEachIndexed
+            val normalizedY = ((price - minPrice) / range).toFloat()
             // Invert Y axis since 0 is top in Canvas
             val y = height - (normalizedY * height)
             val x = index * pointWidth
@@ -238,7 +244,7 @@ fun StockLineChart(
 }
 
 @Composable
-fun StockSummaryCard(summary: com.example.tradingagent.data.api.StockSummary) {
+fun StockSummaryCard(summary: com.example.tradingagent.data.api.StockSummary, tradesCount: Int, winRate: Double) {
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
@@ -260,8 +266,8 @@ fun StockSummaryCard(summary: com.example.tradingagent.data.api.StockSummary) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                SummaryItem(label = "Total Trades", value = summary.tradesCount.toString())
-                SummaryItem(label = "Win Rate", value = "${String.format(Locale.US, "%.0f", summary.winRate)}%")
+                SummaryItem(label = "Total Trades", value = tradesCount.toString())
+                SummaryItem(label = "Win Rate", value = "${String.format(Locale.US, "%.0f", winRate)}%")
                 SummaryItem(
                     label = "Total P&L", 
                     value = "$pnlPrefix${currencyFormat.format(summary.totalPnl)}",

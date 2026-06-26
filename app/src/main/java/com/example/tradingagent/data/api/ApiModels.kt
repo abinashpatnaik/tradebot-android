@@ -162,17 +162,14 @@ data class MarketConfig(
 @Serializable
 data class ChartDataPoint(
     val date: String,
-    val price: Double
+    val price: Double? = null
 )
 
 @Serializable
 data class StockSummary(
-    val symbol: String,
-    val tradesCount: Int = 0,
-    val winRate: Double = 0.0,
-    val totalPnl: Double = 0.0,
-    val bestTrade: Double = 0.0,
-    val worstTrade: Double = 0.0
+    val totalBought: Double = 0.0,
+    val totalSold: Double = 0.0,
+    val totalPnl: Double = 0.0
 )
 
 @Serializable
