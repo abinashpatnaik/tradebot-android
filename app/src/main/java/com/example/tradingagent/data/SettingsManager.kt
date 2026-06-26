@@ -71,6 +71,12 @@ class SettingsManager(context: Context) {
             )
         }
 
+    // ── Auth PIN ─────────────────────────────────────────────────────
+
+    var pinHash: String?
+        get() = prefs.getString(KEY_PIN_HASH, null)
+        set(value) = put { putString(KEY_PIN_HASH, value) }
+
     // ── Helpers ──────────────────────────────────────────────────────
 
     /** Whether Basic-Auth credentials have been configured. */
@@ -109,6 +115,7 @@ class SettingsManager(context: Context) {
         private const val KEY_PASSWORD = "password"
         private const val KEY_REFRESH_INTERVAL = "refresh_interval_seconds"
         private const val KEY_DARK_MODE = "dark_mode"
+        private const val KEY_PIN_HASH = "pin_hash"
 
         const val DEFAULT_SERVER_URL = "http://10.0.2.2:3001"
         const val DEFAULT_REFRESH_SECONDS = 5
@@ -117,5 +124,10 @@ class SettingsManager(context: Context) {
         private const val DARK_MODE_SYSTEM = 0
         private const val DARK_MODE_ON = 1
         private const val DARK_MODE_OFF = 2
+
+        fun hashPin(pin: String): String {
+            val bytes = java.security.MessageDigest.getInstance("SHA-256").digest(pin.toByteArray())
+            return bytes.joinToString("") { "%02x".format(it) }
+        }
     }
 }
