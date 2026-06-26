@@ -52,12 +52,14 @@ import com.example.tradingagent.theme.SignalSellRed
 import com.example.tradingagent.theme.SignalWarmingOrange
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignalsScreen(
     viewModel: SignalsViewModel = viewModel(),
     modifier: Modifier = Modifier,
+    onStockClick: (String) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -121,7 +123,7 @@ fun SignalsScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(state.signals, key = { it.symbol }) { signal ->
-                    SignalCard(signal = signal)
+                    SignalCard(signal = signal, onClick = { onStockClick(signal.symbol) })
                 }
             }
         }
@@ -129,7 +131,7 @@ fun SignalsScreen(
 }
 
 @Composable
-private fun SignalCard(signal: Signal) {
+private fun SignalCard(signal: Signal, onClick: () -> Unit = {}) {
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
@@ -139,7 +141,9 @@ private fun SignalCard(signal: Signal) {
     val trendZone = getTrendZone(signal.trendScore)
 
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
     ) {
         Column(
             modifier = Modifier

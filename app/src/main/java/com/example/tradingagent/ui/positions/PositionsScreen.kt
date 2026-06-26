@@ -43,12 +43,14 @@ import com.example.tradingagent.theme.LossRed
 import com.example.tradingagent.theme.ProfitGreen
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.compose.foundation.clickable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PositionsScreen(
     viewModel: PositionsViewModel = viewModel(),
     modifier: Modifier = Modifier,
+    onStockClick: (String) -> Unit = {}
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -99,7 +101,7 @@ fun PositionsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     items(state.positions, key = { it.symbol }) { position ->
-                        PositionCard(position = position)
+                        PositionCard(position = position, onClick = { onStockClick(position.symbol) })
                     }
                 }
             }
@@ -155,7 +157,7 @@ private fun PositionsSummary(
 }
 
 @Composable
-private fun PositionCard(position: Position) {
+private fun PositionCard(position: Position, onClick: () -> Unit = {}) {
     val currencyFormat = NumberFormat.getCurrencyInstance(Locale.US).apply {
         maximumFractionDigits = 2
         minimumFractionDigits = 2
@@ -165,7 +167,9 @@ private fun PositionCard(position: Position) {
     val pnlIcon = if (position.unrealizedPnl >= 0) Icons.Default.TrendingUp else Icons.Default.TrendingDown
 
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
     ) {
         Column(
             modifier = Modifier

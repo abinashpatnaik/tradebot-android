@@ -79,6 +79,9 @@ class TradingApiService(
     suspend fun getMarketConfig(): MarketConfig? =
         getAndDecode("/api/market-config")
 
+    suspend fun getStockDetails(symbol: String): StockDetailsResponse? =
+        getAndDecode("/api/stock/$symbol")
+
     // ── Internal helpers ─────────────────────────────────────────────
 
     /**

@@ -154,3 +154,30 @@ data class MarketConfig(
     @SerialName("currencySymbol") val currencySymbol: String? = null,
     val timezone: String? = null
 )
+
+// ──────────────────────────────────────────────
+// GET /api/stock/:symbol
+// ──────────────────────────────────────────────
+
+@Serializable
+data class ChartDataPoint(
+    val date: String,
+    val price: Double
+)
+
+@Serializable
+data class StockSummary(
+    val symbol: String,
+    val tradesCount: Int = 0,
+    val winRate: Double = 0.0,
+    val totalPnl: Double = 0.0,
+    val bestTrade: Double = 0.0,
+    val worstTrade: Double = 0.0
+)
+
+@Serializable
+data class StockDetailsResponse(
+    val chartData: List<ChartDataPoint> = emptyList(),
+    val summary: StockSummary? = null,
+    val trades: List<Trade> = emptyList()
+)

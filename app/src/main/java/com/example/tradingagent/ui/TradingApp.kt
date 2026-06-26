@@ -54,11 +54,21 @@ fun TradingApp(modifier: Modifier = Modifier) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     // Settings is shown as a full-screen overlay from Home's gear icon
     var showSettings by rememberSaveable { mutableIntStateOf(0) } // 0 = hidden, 1 = showing
+    var selectedSymbol by rememberSaveable { androidx.compose.runtime.mutableStateOf<String?>(null) }
 
     if (showSettings == 1) {
         com.example.tradingagent.ui.settings.SettingsScreen(
             modifier = Modifier.fillMaxSize(),
             onBack = { showSettings = 0 },
+        )
+        return
+    }
+
+    if (selectedSymbol != null) {
+        com.example.tradingagent.ui.details.StockDetailsScreen(
+            symbol = selectedSymbol!!,
+            onBack = { selectedSymbol = null },
+            modifier = Modifier.fillMaxSize()
         )
         return
     }
@@ -109,8 +119,14 @@ fun TradingApp(modifier: Modifier = Modifier) {
                     modifier = screenModifier,
                     onSettingsClick = { showSettings = 1 },
                 )
-                1 -> PositionsScreen(modifier = screenModifier)
-                2 -> SignalsScreen(modifier = screenModifier)
+                1 -> PositionsScreen(
+                    modifier = screenModifier,
+                    onStockClick = { selectedSymbol = it }
+                )
+                2 -> SignalsScreen(
+                    modifier = screenModifier,
+                    onStockClick = { selectedSymbol = it }
+                )
                 3 -> TradesScreen(modifier = screenModifier)
             }
         }
