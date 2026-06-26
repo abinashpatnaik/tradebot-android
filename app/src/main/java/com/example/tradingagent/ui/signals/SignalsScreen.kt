@@ -248,14 +248,14 @@ private fun SignalCard(signal: Signal, onClick: () -> Unit = {}) {
                                 .width(80.dp)
                                 .height(6.dp)
                                 .clip(RoundedCornerShape(3.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                                .background(LossRed),
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxWidth((displayConf / 100.0).toFloat().coerceIn(0f, 1f))
+                                    .fillMaxWidth((conf / 100.0).toFloat().coerceIn(0f, 1f))
                                     .height(6.dp)
                                     .clip(RoundedCornerShape(3.dp))
-                                    .background(color),
+                                    .background(ProfitGreen),
                             )
                         }
                     } else if (signal.aiDecision == "OFF" || signal.aiDecision == "IDLE") {
@@ -345,10 +345,10 @@ private data class TrendZone(val label: String, val color: Color)
 
 private fun getTrendZone(score: Double): TrendZone {
     return when {
-        score >= 0.55 -> TrendZone("BUY zone", SignalBuyGreen)
-        score in 0.40..0.55 -> TrendZone("Warming up", SignalWarmingOrange)
-        score in -0.40..0.40 -> TrendZone("Neutral", SignalNeutralGray)
-        score in -0.55..-0.40 -> TrendZone("Cooling down", SignalCoolingBlue)
+        score >= 0.48 -> TrendZone("BUY zone", SignalBuyGreen)
+        score in 0.336..0.48 -> TrendZone("Warming up", SignalWarmingOrange)
+        score in -0.245..0.336 -> TrendZone("Neutral", SignalNeutralGray)
+        score in -0.35..-0.245 -> TrendZone("Cooling down", SignalCoolingBlue)
         else -> TrendZone("SELL zone", SignalSellRed)
     }
 }
