@@ -192,7 +192,7 @@ private fun SignalCard(signal: Signal, onClick: () -> Unit = {}) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = trendZone.label,
+                        text = "${trendZone.label} (${String.format(java.util.Locale.US, "%.2f", signal.trendScore ?: 0.0)})",
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.SemiBold,
                         color = trendZone.color,

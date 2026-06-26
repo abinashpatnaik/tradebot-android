@@ -323,7 +323,7 @@ private fun AppInfoSection(appVersion: String) {
             HorizontalDivider()
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "AI-powered automated trading agent\nfor Indian stock markets",
+                text = "AI-powered automated trading agent\nfor US stock markets",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,

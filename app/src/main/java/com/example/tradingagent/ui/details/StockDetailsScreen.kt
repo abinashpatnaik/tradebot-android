@@ -136,7 +136,7 @@ fun StockDetailsScreen(
                         details.summary?.let { summary ->
                             Spacer(modifier = Modifier.height(8.dp))
                             val closedTrades = details.trades.filter { it.pnl != null }
-                            val winRate = if (closedTrades.isEmpty()) 0.0 else (closedTrades.count { it.pnl?.toDoubleOrNull() ?: 0.0 > 0 } / closedTrades.size.toDouble()) * 100
+                            val winRate = if (closedTrades.isEmpty()) 0.0 else (closedTrades.count { it.pnl ?: 0.0 > 0.0 } / closedTrades.size.toDouble()) * 100
                             StockSummaryCard(summary, details.trades.size, winRate)
                         }
                     }
@@ -173,9 +173,9 @@ fun StockDetailsScreen(
                                 time = apiTrade.time,
                                 action = apiTrade.action,
                                 symbol = apiTrade.symbol,
-                                quantity = apiTrade.quantity?.toIntOrNull() ?: 0,
-                                price = apiTrade.price?.toDoubleOrNull() ?: 0.0,
-                                pnl = apiTrade.pnl?.toDoubleOrNull(),
+                                quantity = apiTrade.quantity?.toInt() ?: 0,
+                                price = apiTrade.price ?: 0.0,
+                                pnl = apiTrade.pnl,
                                 mode = (apiTrade.mode ?: "paper").uppercase()
                             )
                             TradeRow(trade = uiTrade)

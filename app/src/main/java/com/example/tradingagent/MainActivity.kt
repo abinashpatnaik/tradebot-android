@@ -7,6 +7,8 @@ import androidx.compose.runtime.*
 import androidx.fragment.app.FragmentActivity
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.tradingagent.data.SettingsManager
 import com.example.tradingagent.theme.TradingAgentTheme
 import com.example.tradingagent.ui.TradingApp
 import com.example.tradingagent.ui.auth.AuthScreen
@@ -26,9 +28,15 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val settings = SettingsManager(applicationContext)
+
         enableEdgeToEdge()
         setContent {
-            TradingAgentTheme {
+            // Observe settingsVersion so UI updates when theme changes
+            val version by settings.settingsVersion.collectAsState()
+            val isDark = settings.darkMode ?: isSystemInDarkTheme()
+
+            TradingAgentTheme(darkTheme = isDark) {
                 if (isAuthenticated.value) {
                     TradingApp()
                 } else {

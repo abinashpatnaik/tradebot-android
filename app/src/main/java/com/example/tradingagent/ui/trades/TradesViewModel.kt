@@ -87,9 +87,9 @@ class TradesViewModel : ViewModel() {
         time = time,
         action = action,
         symbol = symbol,
-        quantity = quantity?.toIntOrNull() ?: 0,
-        price = price?.toDoubleOrNull() ?: 0.0,
-        pnl = pnl?.toDoubleOrNull(),
+        quantity = quantity?.toInt() ?: 0,
+        price = price ?: 0.0,
+        pnl = pnl,
         mode = (mode ?: "paper").uppercase(),
     )
 }

@@ -42,11 +42,11 @@ data class Position(
 
     // Alpaca-style fields (snake_case from API)
     val symbol: String? = null,
-    val quantity: String? = null,
-    @SerialName("avg_cost") val alpacaAvgCost: String? = null,
-    @SerialName("current_price") val currentPrice: String? = null,
-    @SerialName("market_value") val marketValue: String? = null,
-    @SerialName("unrealized_pl") val unrealizedPl: String? = null
+    val quantity: Double? = null,
+    @SerialName("avg_cost") val alpacaAvgCost: Double? = null,
+    @SerialName("current_price") val currentPrice: Double? = null,
+    @SerialName("market_value") val marketValue: Double? = null,
+    @SerialName("unrealized_pl") val unrealizedPl: Double? = null
 ) {
     /** Unified display symbol — prefers Alpaca symbol, falls back to IBKR contractDesc. */
     val displaySymbol: String
@@ -54,23 +54,23 @@ data class Position(
 
     /** Unified display quantity as a Double. */
     val displayQuantity: Double
-        get() = quantity?.toDoubleOrNull() ?: position ?: 0.0
+        get() = quantity ?: position ?: 0.0
 
     /** Unified market value as a Double. */
     val displayMarketValue: Double
-        get() = marketValue?.toDoubleOrNull() ?: mktValue ?: 0.0
+        get() = marketValue ?: mktValue ?: 0.0
 
     /** Unified unrealized P&L as a Double. */
     val displayUnrealizedPnl: Double
-        get() = unrealizedPl?.toDoubleOrNull() ?: unrealizedPnl ?: 0.0
+        get() = unrealizedPl ?: unrealizedPnl ?: 0.0
 
     /** Unified current price as a Double. */
     val displayCurrentPrice: Double
-        get() = currentPrice?.toDoubleOrNull() ?: mktPrice ?: 0.0
+        get() = currentPrice ?: mktPrice ?: 0.0
 
     /** Unified average cost as a Double. */
     val displayAvgCost: Double
-        get() = alpacaAvgCost?.toDoubleOrNull() ?: avgCost ?: avgPrice ?: 0.0
+        get() = alpacaAvgCost ?: avgCost ?: avgPrice ?: 0.0
 }
 
 // ──────────────────────────────────────────────
@@ -108,10 +108,10 @@ data class Trade(
     val time: String = "",
     val action: String = "",     // "BUY" or "SELL"
     val symbol: String = "",
-    val quantity: String? = null,
-    val price: String? = null,
-    val notional: String? = null,
-    val pnl: String? = null,
+    val quantity: Double? = null,
+    val price: Double? = null,
+    val notional: Double? = null,
+    val pnl: Double? = null,
     @SerialName("exit_reason") val exitReason: String? = null,
     val mode: String? = null     // "paper" or "live"
 )
