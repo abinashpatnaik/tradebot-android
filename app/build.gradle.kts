@@ -88,4 +88,8 @@ dependencies {
 
   // Icons
   implementation(libs.compose.material.icons.extended)
+
+  // Auth
+  implementation(libs.androidx.appcompat)
+  implementation(libs.androidx.biometric)
 }
