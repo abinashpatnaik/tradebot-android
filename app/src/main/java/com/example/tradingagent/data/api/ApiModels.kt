@@ -91,8 +91,9 @@ data class Signal(
     val confidence: Double? = null,
     @SerialName("buyThreshold") val buyThreshold: Double? = null,
     @SerialName("sellThreshold") val sellThreshold: Double? = null,
-    @SerialName("aiDecision") val aiDecision: String? = null,  // "APPROVED", "REJECTED", "IDLE", "OFF"
+    @SerialName("aiDecision") val aiDecision: String? = null,  // "APPROVED", "REJECTED", "IDLE", "OFF", "GHOST_APPROVED", etc.
     @SerialName("aiReason") val aiReason: String? = null,
+    @SerialName("mlConfidence") val mlConfidence: Double? = null,
     @SerialName("holdReason") val holdReason: String? = null,
     @SerialName("updated_at") val updatedAt: String? = null
 )

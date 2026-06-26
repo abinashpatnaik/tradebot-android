@@ -11,14 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -79,6 +84,32 @@ fun SignalsScreen(
         ) {
             AnimatedVisibility(visible = state.isLoading) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+
+            // Sorting Chips
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(SortColumn.values()) { column ->
+                    val isSelected = state.sortColumn == column
+                    FilterChip(
+                        selected = isSelected,
+                        onClick = { viewModel.setSort(column) },
+                        label = { Text(column.displayName) },
+                        trailingIcon = {
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = if (state.isAscending) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                    contentDescription = "Sort direction",
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    )
+                }
             }
 
             LazyColumn(
@@ -178,7 +209,7 @@ private fun SignalCard(signal: Signal) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     SignalBadge(
                         label = signal.signal,
                         color = getSignalColor(signal.signal),
@@ -192,17 +223,50 @@ private fun SignalCard(signal: Signal) {
                         )
                     }
                 }
-                AiDecisionBadge(
-                    label = "AI: ${signal.aiDecision}",
-                    decision = signal.aiDecision,
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = String.format(Locale.US, "%.2f", signal.trendScore),
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = trendZone.color,
-                )
+                
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                    if (signal.mlConfidence != null && signal.mlConfidence != 0.0) {
+                        val conf = signal.mlConfidence * 100.0
+                        val isUp = conf >= 50.0
+                        val color = if (isUp) ProfitGreen else LossRed
+                        val label = if (isUp) "UP" else "DOWN"
+                        val displayConf = if (isUp) conf else 100.0 - conf
+                        
+                        Text(
+                            text = "${String.format(Locale.US, "%.0f", displayConf)}% $label",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = color
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Box(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .height(6.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth((displayConf / 100.0).toFloat().coerceIn(0f, 1f))
+                                    .height(6.dp)
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(color),
+                            )
+                        }
+                    } else if (signal.aiDecision == "OFF" || signal.aiDecision == "IDLE") {
+                        AiDecisionBadge(
+                            label = "AI: ${signal.aiDecision}",
+                            decision = signal.aiDecision,
+                        )
+                    } else {
+                        val isPos = signal.aiDecision.contains("APPROVED")
+                        AiDecisionBadge(
+                            label = signal.aiDecision.replace("GHOST_", ""),
+                            decision = if (isPos) "BUY" else "SELL" // Map to color
+                        )
+                    }
+                }
             }
         }
     }
