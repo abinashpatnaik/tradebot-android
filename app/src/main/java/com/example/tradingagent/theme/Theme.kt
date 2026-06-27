@@ -11,75 +11,44 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-// ── Premium dark trading scheme (default) ──────────────────────
-private val TradingDarkScheme = darkColorScheme(
-    primary = CyanAccent,
-    onPrimary = NavyDark,
-    primaryContainer = Color(0xFF003D4D),
-    onPrimaryContainer = CyanAccent,
-
-    secondary = TealAccent,
-    onSecondary = NavyDark,
-    secondaryContainer = Color(0xFF003D33),
-    onSecondaryContainer = TealAccent,
-
-    tertiary = GoldAccent,
-    onTertiary = NavyDark,
-    tertiaryContainer = Color(0xFF4D3D00),
-    onTertiaryContainer = GoldAccent,
-
-    background = NavyDark,
-    onBackground = TextPrimary,
-
-    surface = NavySurface,
-    onSurface = TextPrimary,
-    surfaceVariant = NavyCard,
-    onSurfaceVariant = TextSecondary,
-
-    outline = TextMuted,
-    outlineVariant = Color(0xFF2A3060),
-
-    inverseSurface = TextPrimary,
-    inverseOnSurface = NavyDark,
-    inversePrimary = Color(0xFF006B7A),
-)
-
-// ── Light fallback ─────────────────────────────────────────────
-private val TradingLightScheme = lightColorScheme(
-    primary = Color(0xFF006B7A),
+// ── Low-Fidelity Wireframe Scheme ──────────────────────
+private val WireframeScheme = lightColorScheme(
+    primary = WfAccent,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFB3F0FF),
-    onPrimaryContainer = Color(0xFF001F26),
+    primaryContainer = WfAccentMuted,
+    onPrimaryContainer = WfAccent,
 
-    secondary = Color(0xFF006B5A),
+    secondary = WfTextSecondary,
     onSecondary = Color.White,
+    secondaryContainer = WfSurfaceVariant,
+    onSecondaryContainer = WfTextPrimary,
 
-    tertiary = Color(0xFF8B6900),
+    tertiary = WfTextSecondary,
     onTertiary = Color.White,
+    tertiaryContainer = WfSurfaceVariant,
+    onTertiaryContainer = WfTextPrimary,
 
-    background = Color(0xFFF5F7FA),
-    onBackground = Color(0xFF1A1C2E),
+    background = WfBackground,
+    onBackground = WfTextPrimary,
 
-    surface = Color.White,
-    onSurface = Color(0xFF1A1C2E),
-    surfaceVariant = Color(0xFFEEF0F5),
-    onSurfaceVariant = Color(0xFF44475A),
+    surface = WfSurface,
+    onSurface = WfTextPrimary,
+    surfaceVariant = WfSurfaceVariant,
+    onSurfaceVariant = WfTextSecondary,
+
+    outline = WfTextSecondary,
+    outlineVariant = WfSurfaceVariant,
+
+    inverseSurface = WfTextPrimary,
+    inverseOnSurface = WfBackground,
+    inversePrimary = WfAccentMuted,
 )
 
 @Composable
 fun TradingAgentTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Disabled: use our curated trading palette
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> TradingDarkScheme
-        else -> TradingLightScheme
-    }
-
-    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
+    MaterialTheme(colorScheme = WireframeScheme, typography = Typography, content = content)
 }

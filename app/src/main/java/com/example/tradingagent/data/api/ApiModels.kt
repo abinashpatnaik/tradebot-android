@@ -17,6 +17,8 @@ data class PortfolioResponse(
     @SerialName("maxPositions") val maxPositions: Int = 0,
     @SerialName("winRate") val winRate: Double = 0.0,
     @SerialName("tradesToday") val tradesToday: Int = 0,
+    @SerialName("lifetimeRealizedPnl") val lifetimeRealizedPnl: Double = 0.0,
+    @SerialName("marketPulse") val marketPulse: List<TickerItem> = emptyList(),
     @SerialName("agentStatus") val agentStatus: String = "offline",
     @SerialName("marketOpen") val marketOpen: Boolean = false,
     @SerialName("lastUpdated") val lastUpdated: String = ""
@@ -46,7 +48,14 @@ data class Position(
     @SerialName("avg_cost") val alpacaAvgCost: Double? = null,
     @SerialName("current_price") val currentPrice: Double? = null,
     @SerialName("market_value") val marketValue: Double? = null,
-    @SerialName("unrealized_pl") val unrealizedPl: Double? = null
+    @SerialName("unrealized_pl") val unrealizedPl: Double? = null,
+
+    // Wireframe specific enrichment fields
+    val allocation: Double? = null,
+    val strategy: String? = null,
+    val stopLoss: Double? = null,
+    val takeProfit: Double? = null,
+    val trailingStop: Double? = null
 ) {
     /** Unified display symbol — prefers Alpaca symbol, falls back to IBKR contractDesc. */
     val displaySymbol: String
@@ -95,7 +104,8 @@ data class Signal(
     @SerialName("aiReason") val aiReason: String? = null,
     @SerialName("mlConfidence") val mlConfidence: Double? = null,
     @SerialName("holdReason") val holdReason: String? = null,
-    @SerialName("updated_at") val updatedAt: String? = null
+    @SerialName("updated_at") val updatedAt: String? = null,
+    val downsideRisk: Double? = null
 )
 
 // ──────────────────────────────────────────────

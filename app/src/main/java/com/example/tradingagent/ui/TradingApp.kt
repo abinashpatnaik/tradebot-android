@@ -52,12 +52,27 @@ private val bottomNavItems = listOf(
 @Composable
 fun TradingApp(modifier: Modifier = Modifier) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    // Settings is shown as a full-screen overlay from Home's gear icon
     var showSettings by rememberSaveable { mutableIntStateOf(0) } // 0 = hidden, 1 = showing
+    var showLanding by rememberSaveable { mutableIntStateOf(1) } // 1 = showing, 0 = dashboard
     var selectedSymbol by rememberSaveable { androidx.compose.runtime.mutableStateOf<String?>(null) }
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val app = (context.applicationContext as com.example.tradingagent.TradingAgentApp)
+    val repository = app.repository
+    val settingsManager = app.settingsManager
+
+    if (showLanding == 1) {
+        com.example.tradingagent.ui.auth.LandingScreen(
+            onOpenDashboard = { showLanding = 0 },
+            modifier = Modifier.fillMaxSize()
+        )
+        return
+    }
 
     if (showSettings == 1) {
         com.example.tradingagent.ui.settings.SettingsScreen(
+            settingsManager = settingsManager,
+            onSave = { app.reconfigureApi() },
             modifier = Modifier.fillMaxSize(),
             onBack = { showSettings = 0 },
         )
@@ -72,6 +87,14 @@ fun TradingApp(modifier: Modifier = Modifier) {
         )
         return
     }
+
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    
+    val portfolio by repository.portfolio.collectAsState()
+    val positions by repository.positions.collectAsState()
+    val signals by repository.signals.collectAsState()
+    val tradesToday by repository.tradesToday.collectAsState()
+    val allTrades by repository.allTrades.collectAsState()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -116,18 +139,29 @@ fun TradingApp(modifier: Modifier = Modifier) {
         ) { tab ->
             when (tab) {
                 0 -> HomeScreen(
+                    portfolio = portfolio,
+                    positions = positions,
+                    signals = signals,
+                    tradesToday = tradesToday,
+                    onRefresh = { scope.launch { repository.refresh() } },
                     modifier = screenModifier,
                     onSettingsClick = { showSettings = 1 },
                 )
                 1 -> PositionsScreen(
+                    positions = positions,
                     modifier = screenModifier,
                     onStockClick = { selectedSymbol = it }
                 )
                 2 -> SignalsScreen(
+                    signals = signals,
                     modifier = screenModifier,
                     onStockClick = { selectedSymbol = it }
                 )
-                3 -> TradesScreen(modifier = screenModifier)
+                3 -> TradesScreen(
+                    tradesToday = tradesToday,
+                    allTrades = allTrades,
+                    modifier = screenModifier
+                )
             }
         }
     }
