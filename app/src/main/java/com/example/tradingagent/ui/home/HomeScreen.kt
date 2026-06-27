@@ -87,9 +87,11 @@ fun HomeScreen(
                     portfolio.marketPulse.forEach { ticker ->
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text(ticker.symbol)
-                            val color = if ((ticker.changePercent ?: 0.0) >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                            val sign = if ((ticker.changePercent ?: 0.0) >= 0) "+" else ""
-                            Text("$sign${String.format("%.2f", ticker.changePercent)}%", color = color)
+                            val changePct = ticker.changePercent
+                            val color = if ((changePct ?: 0.0) >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                            val sign = if ((changePct ?: 0.0) >= 0) "+" else ""
+                            val displayPct = if (changePct != null) String.format("%.2f", changePct) else "0.00"
+                            Text("$sign$displayPct%", color = color)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }

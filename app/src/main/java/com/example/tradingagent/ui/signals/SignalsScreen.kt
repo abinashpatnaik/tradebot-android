@@ -113,19 +113,25 @@ fun SignalCard(signal: Signal, currencyFormatter: NumberFormat, percentFormatter
 
         // Row 2
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Confidence: ${(signal.confidence ?: 0.0).toInt()}%")
+            val confVal = signal.mlConfidence ?: signal.confidence ?: 0.0
+            val confColor = when {
+                confVal >= 60.0 -> MaterialTheme.colorScheme.primary
+                confVal >= 40.0 -> androidx.compose.ui.graphics.Color(0xFFE6A23C) // Warning yellow/orange
+                else -> MaterialTheme.colorScheme.error
+            }
+            Text("ML Confidence: ${confVal.toInt()}%", color = confColor, fontWeight = FontWeight.Bold)
             WireframeChip(signal.signal ?: "HOLD", isActive = signal.signal != "HOLD")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         // Row 3
-        PlaceholderBox(modifier = Modifier.fillMaxWidth().height(16.dp), text = "Trend Score: ${String.format("%.2f", signal.trendScore ?: 0.0)}")
+        PlaceholderBox(modifier = Modifier.fillMaxWidth().height(16.dp), text = "Decision Engine: ${signal.aiDecision ?: "N/A"}")
         
         Spacer(modifier = Modifier.height(8.dp))
 
         // Row 4
-        PlaceholderBox(modifier = Modifier.fillMaxWidth().height(16.dp), text = "Downside Risk: ${signal.downsideRisk ?: -3.5}%")
+        PlaceholderBox(modifier = Modifier.fillMaxWidth().height(16.dp), text = "Risk to Stop-Loss: ${String.format("%.1f", signal.downsideRisk ?: -3.5)}%")
 
         Spacer(modifier = Modifier.height(12.dp))
 
