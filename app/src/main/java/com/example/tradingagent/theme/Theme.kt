@@ -44,11 +44,43 @@ private val WireframeScheme = lightColorScheme(
     inversePrimary = WfAccentMuted,
 )
 
+private val DarkScheme = darkColorScheme(
+    primary = WfAccent,
+    onPrimary = Color.White,
+    primaryContainer = WfAccentMuted,
+    onPrimaryContainer = WfAccent,
+
+    secondary = WfTextSecondary,
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFF424242),
+    onSecondaryContainer = Color(0xFFE0E0E0),
+
+    background = Color(0xFF121212),
+    onBackground = Color(0xFFFFFFFF),
+
+    surface = Color(0xFF1E1E1E),
+    onSurface = Color(0xFFFFFFFF),
+    surfaceVariant = Color(0xFF424242),
+    onSurfaceVariant = Color(0xFFBDBDBD),
+
+    outline = Color(0xFF757575),
+    outlineVariant = Color(0xFF424242),
+)
+
 @Composable
 fun TradingAgentTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(colorScheme = WireframeScheme, typography = Typography, content = content)
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkScheme
+        else -> WireframeScheme
+    }
+
+    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }
