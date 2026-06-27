@@ -18,6 +18,8 @@ import com.example.tradingagent.data.api.Signal
 import androidx.compose.foundation.lazy.items
 import java.text.NumberFormat
 import java.util.Locale
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,6 +31,18 @@ fun SignalsScreen(
     val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US)
     val percentFormatter = NumberFormat.getPercentInstance(Locale.US).apply {
         maximumFractionDigits = 2
+    }
+
+    var activeFilter by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("All") }
+
+    val filteredSignals = androidx.compose.runtime.remember(signals, activeFilter) {
+        when (activeFilter) {
+            "Momentum" -> signals.filter { it.macdSignal == "bullish" && it.emaSignal == "bullish" }
+            "Reversal" -> signals.filter { (it.rsi ?: 50.0) < 40.0 }
+            "Breakout" -> signals.filter { (it.changePct ?: 0.0) > 2.0 }
+            "AI Score" -> signals.filter { (it.mlConfidence ?: 0.0) > 0.6 || (it.trendScore ?: 0.0) > 0.0 }
+            else -> signals
+        }
     }
 
     Scaffold(
@@ -50,16 +64,17 @@ fun SignalsScreen(
                 .fillMaxSize()
         ) {
             // Filter row
-            Row(
+            androidx.compose.foundation.lazy.LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                WireframeChip("Momentum", isActive = true)
-                WireframeChip("Reversal")
-                WireframeChip("Breakout")
-                WireframeChip("AI Score")
+                item { WireframeChip("All", isActive = activeFilter == "All", onClick = { activeFilter = "All" }) }
+                item { WireframeChip("Momentum", isActive = activeFilter == "Momentum", onClick = { activeFilter = "Momentum" }) }
+                item { WireframeChip("Reversal", isActive = activeFilter == "Reversal", onClick = { activeFilter = "Reversal" }) }
+                item { WireframeChip("Breakout", isActive = activeFilter == "Breakout", onClick = { activeFilter = "Breakout" }) }
+                item { WireframeChip("AI Score", isActive = activeFilter == "AI Score", onClick = { activeFilter = "AI Score" }) }
             }
 
             // Signal list
@@ -67,12 +82,12 @@ fun SignalsScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                if (signals.isEmpty()) {
+                if (filteredSignals.isEmpty()) {
                     item {
                         Text("No signals currently available.", style = MaterialTheme.typography.bodyLarge, modifier = Modifier.padding(16.dp))
                     }
                 } else {
-                    items(signals) { signal ->
+                    items(filteredSignals) { signal ->
                         SignalCard(signal = signal, currencyFormatter = currencyFormatter, percentFormatter = percentFormatter, onStockClick = onStockClick)
                     }
                 }
