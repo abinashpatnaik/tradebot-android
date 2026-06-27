@@ -32,6 +32,10 @@ fun HomeScreen(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     onSettingsClick: () -> Unit,
+    onNavigateToPositions: () -> Unit,
+    onNavigateToSignals: () -> Unit,
+    onNavigateToTrades: () -> Unit,
+    onStockClick: (String) -> Unit,
 ) {
     val currencyFormatter = NumberFormat.getCurrencyInstance(Locale.US)
     val percentFormatter = NumberFormat.getPercentInstance(Locale.US).apply {
@@ -95,9 +99,9 @@ fun HomeScreen(
             // Quick Actions
             Text("Quick Actions", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                WireframeButton("View Pos", onClick = {}, modifier = Modifier.weight(1f), isPrimary = false)
-                WireframeButton("Signals", onClick = {}, modifier = Modifier.weight(1f), isPrimary = false)
-                WireframeButton("Trade", onClick = {}, modifier = Modifier.weight(1f))
+                WireframeButton("View Pos", onClick = onNavigateToPositions, modifier = Modifier.weight(1f), isPrimary = false)
+                WireframeButton("Signals", onClick = onNavigateToSignals, modifier = Modifier.weight(1f), isPrimary = false)
+                WireframeButton("Trade", onClick = onNavigateToTrades, modifier = Modifier.weight(1f))
             }
 
             // Highlights
@@ -112,7 +116,18 @@ fun HomeScreen(
                     Text("No immediate actionable signals.")
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                WireframeButton("View Detail", onClick = {}, isPrimary = false, modifier = Modifier.fillMaxWidth())
+                WireframeButton(
+                    "View Detail",
+                    onClick = {
+                        if (topSignal != null) {
+                            onStockClick(topSignal.symbol)
+                        } else {
+                            onNavigateToSignals()
+                        }
+                    },
+                    isPrimary = false,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             // Recent Activity

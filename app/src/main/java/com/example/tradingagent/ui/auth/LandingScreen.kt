@@ -16,6 +16,7 @@ import com.example.tradingagent.ui.components.WireframeCard
 @Composable
 fun LandingScreen(
     onOpenDashboard: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -89,7 +90,7 @@ fun LandingScreen(
             )
             WireframeButton(
                 text = "Connection Settings",
-                onClick = { /* settings */ },
+                onClick = onSettingsClick,
                 isPrimary = false,
                 modifier = Modifier.fillMaxWidth()
             )

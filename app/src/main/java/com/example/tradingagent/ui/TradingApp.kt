@@ -63,20 +63,21 @@ fun TradingApp(modifier: Modifier = Modifier) {
     val repository = app.repository
     val settingsManager = app.settingsManager
 
-    if (showLanding == 1) {
-        com.example.tradingagent.ui.auth.LandingScreen(
-            onOpenDashboard = { showLanding = 0 },
-            modifier = Modifier.fillMaxSize()
-        )
-        return
-    }
-
     if (showSettings == 1) {
         com.example.tradingagent.ui.settings.SettingsScreen(
             settingsManager = settingsManager,
             onSave = { app.reconfigureApi() },
             modifier = Modifier.fillMaxSize(),
             onBack = { showSettings = 0 },
+        )
+        return
+    }
+
+    if (showLanding == 1) {
+        com.example.tradingagent.ui.auth.LandingScreen(
+            onOpenDashboard = { showLanding = 0 },
+            onSettingsClick = { showSettings = 1 },
+            modifier = Modifier.fillMaxSize()
         )
         return
     }
@@ -148,6 +149,10 @@ fun TradingApp(modifier: Modifier = Modifier) {
                     onRefresh = { scope.launch { repository.refresh() } },
                     modifier = screenModifier,
                     onSettingsClick = { showSettings = 1 },
+                    onNavigateToPositions = { selectedTab = 1 },
+                    onNavigateToSignals = { selectedTab = 2 },
+                    onNavigateToTrades = { selectedTab = 3 },
+                    onStockClick = { selectedSymbol = it }
                 )
                 1 -> PositionsScreen(
                     positions = positions,
