@@ -116,9 +116,9 @@ fun SignalCard(signal: Signal, currencyFormatter: NumberFormat, percentFormatter
 
         // Row 5
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            WireframeButton("View Thesis", onClick = {}, modifier = Modifier.weight(1f), isPrimary = false)
-            WireframeButton("Watchlist", onClick = {}, modifier = Modifier.weight(1f), isPrimary = false)
-            WireframeButton("Simulate", onClick = {}, modifier = Modifier.weight(1f))
+            WireframeButton("View Thesis", onClick = { onStockClick(signal.symbol) }, modifier = Modifier.weight(1f), isPrimary = false)
+            WireframeButton("Watchlist", onClick = { onStockClick(signal.symbol) }, modifier = Modifier.weight(1f), isPrimary = false)
+            WireframeButton("Simulate", onClick = { onStockClick(signal.symbol) }, modifier = Modifier.weight(1f))
         }
     }
 }
