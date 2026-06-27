@@ -12,6 +12,14 @@ import com.example.tradingagent.ui.components.SummaryMetricTile
 import com.example.tradingagent.ui.components.WireframeButton
 import com.example.tradingagent.ui.components.WireframeCard
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.clickable
+import com.example.tradingagent.R
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingScreen(
@@ -23,9 +31,19 @@ fun LandingScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Logo Placeholder", style = MaterialTheme.typography.titleMedium) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_launcher_custom),
+                            contentDescription = "App Logo",
+                            modifier = Modifier.size(32.dp).clip(RoundedCornerShape(8.dp))
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("Alpha Trader", style = MaterialTheme.typography.titleMedium)
+                    }
+                },
                 actions = {
-                    TextButton(onClick = { /* info */ }) {
+                    TextButton(onClick = onSettingsClick) {
                         Text("Info")
                     }
                 }
@@ -43,12 +61,15 @@ fun LandingScreen(
             Text("Trading App", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
             Text("AI-driven execution and portfolio management.", style = MaterialTheme.typography.bodyMedium)
             
-            // Visual placeholder
-            PlaceholderBox(
+            // Abstract Chart Illustration
+            Image(
+                painter = painterResource(id = R.drawable.abstract_chart),
+                contentDescription = "Abstract Chart",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp),
-                text = "Abstract Chart Illustration"
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
             )
 
             // Capability row
@@ -56,8 +77,16 @@ fun LandingScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                SummaryMetricTile("Feature", "AI Signals", modifier = Modifier.weight(1f))
-                SummaryMetricTile("Feature", "Auto Trades", modifier = Modifier.weight(1f))
+                SummaryMetricTile(
+                    "Feature", 
+                    "AI Signals", 
+                    modifier = Modifier.weight(1f).clickable { onOpenDashboard() }
+                )
+                SummaryMetricTile(
+                    "Feature", 
+                    "Auto Trades", 
+                    modifier = Modifier.weight(1f).clickable { onOpenDashboard() }
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
