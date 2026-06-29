@@ -27,8 +27,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val settings = SettingsManager(applicationContext)
+        val settings = (applicationContext as TradingAgentApp).settingsManager
 
         enableEdgeToEdge()
         setContent {
