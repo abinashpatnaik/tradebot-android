@@ -31,9 +31,10 @@ class MainActivity : FragmentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            // Observe settingsVersion so UI updates when theme changes
-            val version by settings.settingsVersion.collectAsState()
-            val isDark = settings.darkMode ?: isSystemInDarkTheme()
+            // Observe darkModeFlow so UI updates when theme changes
+            val systemDark = isSystemInDarkTheme()
+            val savedDarkMode by settings.darkModeFlow.collectAsState(initial = settings.darkMode)
+            val isDark = savedDarkMode ?: systemDark
 
             TradingAgentTheme(darkTheme = isDark) {
                 if (isAuthenticated.value) {

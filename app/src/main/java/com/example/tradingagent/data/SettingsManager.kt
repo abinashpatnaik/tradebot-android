@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 
 /**
  * Thin wrapper around [SharedPreferences] for persisting user settings.
@@ -28,6 +29,8 @@ class SettingsManager(context: Context) {
 
     /** Incremented on every write; collect to trigger recomposition. */
     val settingsVersion: StateFlow<Long> = _settingsVersion.asStateFlow()
+
+    val darkModeFlow: kotlinx.coroutines.flow.Flow<Boolean?> = settingsVersion.map { darkMode }
 
     // ── Server URL ───────────────────────────────────────────────────
 
