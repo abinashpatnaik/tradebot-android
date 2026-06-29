@@ -13,6 +13,9 @@ import com.example.tradingagent.ui.components.PlaceholderBox
 import com.example.tradingagent.ui.components.WireframeButton
 import com.example.tradingagent.ui.components.WireframeCard
 import com.example.tradingagent.ui.components.WireframeChip
+import com.example.tradingagent.ui.components.SignalBadge
+import com.example.tradingagent.ui.components.ConfidenceText
+import androidx.compose.ui.Alignment
 
 import com.example.tradingagent.data.api.Signal
 import androidx.compose.foundation.lazy.items
@@ -98,13 +101,13 @@ fun SignalsScreen(
 
 @Composable
 fun SignalCard(signal: Signal, currencyFormatter: NumberFormat, percentFormatter: NumberFormat, onStockClick: (String) -> Unit) {
-    WireframeCard {
+    WireframeCard(onClick = { onStockClick(signal.symbol) }) {
         // Row 1
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(signal.symbol, fontWeight = FontWeight.Bold)
             Text(currencyFormatter.format(signal.price ?: 0.0))
             val changePct = signal.changePct ?: 0.0
-            val color = if (changePct >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            val color = if (changePct >= 0) com.example.tradingagent.theme.SignalBuyGreen else com.example.tradingagent.theme.SignalSellRed
             val sign = if (changePct >= 0) "+" else ""
             Text("$sign${String.format("%.2f", changePct)}%", color = color)
         }
@@ -113,33 +116,41 @@ fun SignalCard(signal: Signal, currencyFormatter: NumberFormat, percentFormatter
 
         // Row 2
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            val confVal = signal.mlConfidence ?: signal.confidence ?: 0.0
-            val confColor = when {
-                confVal >= 60.0 -> MaterialTheme.colorScheme.primary
-                confVal >= 40.0 -> androidx.compose.ui.graphics.Color(0xFFE6A23C) // Warning yellow/orange
-                else -> MaterialTheme.colorScheme.error
+            val confVal = (signal.mlConfidence ?: signal.confidence ?: 0.0) / 100.0 // Normalize to 0-1 for ConfidenceText
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text("ML Confidence:", fontWeight = FontWeight.Bold)
+                ConfidenceText(confidence = confVal)
             }
-            Text("ML Confidence: ${confVal.toInt()}%", color = confColor, fontWeight = FontWeight.Bold)
-            WireframeChip(signal.signal ?: "HOLD", isActive = signal.signal != "HOLD")
+            SignalBadge(signal = signal.signal ?: "HOLD")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Row 3
-        PlaceholderBox(modifier = Modifier.fillMaxWidth().height(16.dp), text = "Decision Engine: ${signal.aiDecision ?: "N/A"}")
+        // Row 3 (Decision Engine)
+        val decision = signal.aiDecision ?: "N/A"
+        val decisionColor = when (decision) {
+            "APPROVED" -> com.example.tradingagent.theme.SignalBuyGreen
+            "GHOST_APPROVED" -> com.example.tradingagent.theme.SignalWarmingOrange
+            "REJECTED" -> com.example.tradingagent.theme.SignalSellRed
+            else -> com.example.tradingagent.theme.SignalNeutralGray
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text("Decision Engine: ", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(decision, style = MaterialTheme.typography.bodyMedium, color = decisionColor, fontWeight = FontWeight.Bold)
+        }
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
-        // Row 4
-        PlaceholderBox(modifier = Modifier.fillMaxWidth().height(16.dp), text = "Risk to Stop-Loss: ${String.format("%.1f", signal.downsideRisk ?: -3.5)}%")
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Row 5
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            WireframeButton("View Thesis", onClick = { onStockClick(signal.symbol) }, modifier = Modifier.weight(1f), isPrimary = false)
-            WireframeButton("Watchlist", onClick = { onStockClick(signal.symbol) }, modifier = Modifier.weight(1f), isPrimary = false)
-            WireframeButton("Simulate", onClick = { onStockClick(signal.symbol) }, modifier = Modifier.weight(1f))
+        // Row 4 (Risk to Stop-Loss)
+        val risk = signal.downsideRisk ?: -3.5
+        val riskColor = when {
+            risk >= -2.0 -> com.example.tradingagent.theme.SignalBuyGreen // Low risk
+            risk >= -5.0 -> com.example.tradingagent.theme.SignalWarmingOrange // Medium risk
+            else -> com.example.tradingagent.theme.SignalSellRed // High risk
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text("Risk to Stop-Loss: ", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("${String.format("%.1f", risk)}%", style = MaterialTheme.typography.bodyMedium, color = riskColor, fontWeight = FontWeight.Bold)
         }
     }
 }
