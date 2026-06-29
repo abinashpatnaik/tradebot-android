@@ -2,32 +2,41 @@ package com.example.tradingagent.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ── Low-Fidelity Wireframe Grayscale Palette ────────────────
-val WfBackground = Color(0xFFF5F5F5) // Very light gray
-val WfSurface = Color(0xFFFFFFFF)    // White
-val WfSurfaceVariant = Color(0xFFE0E0E0) // Light gray for cards/dividers
+// ── Alpha Trader Dark Palette ────────────────
+val DarkBackground = Color(0xFF0B0B0E)
+val DarkCardBg = Color(0xFF14141A)
+val DarkCardBorder = Color(0xFF1F1F2E)
+val DarkPrimaryAccent = Color(0xFF00E5A3)
+val DarkSecondaryAccent = Color(0xFFFF4757)
+val DarkTextPrimary = Color(0xFFFFFFFF)
+val DarkTextSecondary = Color(0xFF8B8B9E)
+val DarkTextTertiary = Color(0xFF5A5A6E)
 
-val WfTextPrimary = Color(0xFF212121)
-val WfTextSecondary = Color(0xFF757575)
+// ── Alpha Trader Light Palette ────────────────
+val LightBackground = Color(0xFFF4F5F7)
+val LightCardBg = Color(0xFFFFFFFF)
+val LightCardBorder = Color(0xFFE5E7EB)
+val LightPrimaryAccent = Color(0xFF00BA88)
+val LightSecondaryAccent = Color(0xFFED2E42)
+val LightTextPrimary = Color(0xFF212121)
+val LightTextSecondary = Color(0xFF6B7280)
+val LightTextTertiary = Color(0xFF9CA3AF)
 
-val WfAccent = Color(0xFF1976D2) // Single accent color for active states
-val WfAccentMuted = Color(0xFFBBDEFB)
+// Legacy compat mappings (re-mapped to Dark as default if needed, or removed if unused, keeping for safety)
+val NavyDark = DarkBackground
+val NavySurface = DarkCardBg
+val NavyCard = DarkCardBg
+val NavyCardVariant = DarkCardBorder
+val CyanAccent = DarkPrimaryAccent
+val TealAccent = DarkPrimaryAccent
+val GoldAccent = Color(0xFFFFA502)
+val TextPrimary = DarkTextPrimary
+val TextSecondary = DarkTextSecondary
+val TextMuted = DarkTextTertiary
 
-// Legacy compat
-val NavyDark = WfTextPrimary
-val NavySurface = WfSurface
-val NavyCard = WfSurfaceVariant
-val NavyCardVariant = WfSurfaceVariant
-val CyanAccent = WfAccent
-val TealAccent = WfAccent
-val GoldAccent = WfAccent
-val TextPrimary = WfTextPrimary
-val TextSecondary = WfTextSecondary
-val TextMuted = WfTextSecondary
-
-val Purple80 = WfAccent
-val PurpleGrey80 = WfTextSecondary
-val Pink80 = WfAccent
-val Purple40 = WfAccent
-val PurpleGrey40 = WfTextSecondary
-val Pink40 = WfAccent
+val Purple80 = DarkPrimaryAccent
+val PurpleGrey80 = DarkTextSecondary
+val Pink80 = DarkPrimaryAccent
+val Purple40 = LightPrimaryAccent
+val PurpleGrey40 = LightTextSecondary
+val Pink40 = LightPrimaryAccent

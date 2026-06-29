@@ -11,66 +11,76 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-// ── Low-Fidelity Wireframe Scheme ──────────────────────
-private val WireframeScheme = lightColorScheme(
-    primary = WfAccent,
+// ── Alpha Trader Light Scheme ──────────────────────
+private val AlphaLightScheme = lightColorScheme(
+    primary = LightPrimaryAccent,
     onPrimary = Color.White,
-    primaryContainer = WfAccentMuted,
-    onPrimaryContainer = WfAccent,
+    primaryContainer = LightPrimaryAccent.copy(alpha = 0.1f),
+    onPrimaryContainer = LightPrimaryAccent,
 
-    secondary = WfTextSecondary,
+    secondary = LightSecondaryAccent,
     onSecondary = Color.White,
-    secondaryContainer = WfSurfaceVariant,
-    onSecondaryContainer = WfTextPrimary,
+    secondaryContainer = LightSecondaryAccent.copy(alpha = 0.1f),
+    onSecondaryContainer = LightSecondaryAccent,
 
-    tertiary = WfTextSecondary,
+    tertiary = LightTextSecondary,
     onTertiary = Color.White,
-    tertiaryContainer = WfSurfaceVariant,
-    onTertiaryContainer = WfTextPrimary,
+    tertiaryContainer = LightCardBorder,
+    onTertiaryContainer = LightTextPrimary,
 
-    background = WfBackground,
-    onBackground = WfTextPrimary,
+    background = LightBackground,
+    onBackground = LightTextPrimary,
 
-    surface = WfSurface,
-    onSurface = WfTextPrimary,
-    surfaceVariant = WfSurfaceVariant,
-    onSurfaceVariant = WfTextSecondary,
+    surface = LightCardBg,
+    onSurface = LightTextPrimary,
+    surfaceVariant = LightBackground,
+    onSurfaceVariant = LightTextSecondary,
 
-    outline = WfTextSecondary,
-    outlineVariant = WfSurfaceVariant,
+    outline = LightCardBorder,
+    outlineVariant = LightCardBorder.copy(alpha = 0.5f),
 
-    inverseSurface = WfTextPrimary,
-    inverseOnSurface = WfBackground,
-    inversePrimary = WfAccentMuted,
+    inverseSurface = DarkCardBg,
+    inverseOnSurface = DarkTextPrimary,
+    inversePrimary = DarkPrimaryAccent,
 )
 
-private val DarkScheme = darkColorScheme(
-    primary = WfAccent,
-    onPrimary = Color.White,
-    primaryContainer = WfAccentMuted,
-    onPrimaryContainer = WfAccent,
+// ── Alpha Trader Dark Scheme ──────────────────────
+private val AlphaDarkScheme = darkColorScheme(
+    primary = DarkPrimaryAccent,
+    onPrimary = Color.Black,
+    primaryContainer = DarkPrimaryAccent.copy(alpha = 0.1f),
+    onPrimaryContainer = DarkPrimaryAccent,
 
-    secondary = WfTextSecondary,
-    onSecondary = Color.White,
-    secondaryContainer = Color(0xFF424242),
-    onSecondaryContainer = Color(0xFFE0E0E0),
+    secondary = DarkSecondaryAccent,
+    onSecondary = Color.Black,
+    secondaryContainer = DarkSecondaryAccent.copy(alpha = 0.1f),
+    onSecondaryContainer = DarkSecondaryAccent,
 
-    background = Color(0xFF121212),
-    onBackground = Color(0xFFFFFFFF),
+    tertiary = DarkTextSecondary,
+    onTertiary = Color.Black,
+    tertiaryContainer = DarkCardBorder,
+    onTertiaryContainer = DarkTextPrimary,
 
-    surface = Color(0xFF1E1E1E),
-    onSurface = Color(0xFFFFFFFF),
-    surfaceVariant = Color(0xFF424242),
-    onSurfaceVariant = Color(0xFFBDBDBD),
+    background = DarkBackground,
+    onBackground = DarkTextPrimary,
 
-    outline = Color(0xFF757575),
-    outlineVariant = Color(0xFF424242),
+    surface = DarkCardBg,
+    onSurface = DarkTextPrimary,
+    surfaceVariant = DarkBackground,
+    onSurfaceVariant = DarkTextSecondary,
+
+    outline = DarkCardBorder,
+    outlineVariant = DarkCardBorder.copy(alpha = 0.5f),
+
+    inverseSurface = LightCardBg,
+    inverseOnSurface = LightTextPrimary,
+    inversePrimary = LightPrimaryAccent,
 )
 
 @Composable
 fun TradingAgentTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Force brand colors by default
     content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
@@ -78,8 +88,8 @@ fun TradingAgentTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkScheme
-        else -> WireframeScheme
+        darkTheme -> AlphaDarkScheme
+        else -> AlphaLightScheme
     }
 
     MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
