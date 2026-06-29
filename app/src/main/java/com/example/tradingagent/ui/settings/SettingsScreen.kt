@@ -122,7 +122,7 @@ fun SettingsScreen(
                         isPrimary = currentTheme == false
                     )
                     WireframeButton(
-                        "Gray", 
+                        "Dark", 
                         onClick = { currentTheme = true; settingsManager.darkMode = true }, 
                         modifier = Modifier.weight(1f), 
                         isPrimary = currentTheme == true
