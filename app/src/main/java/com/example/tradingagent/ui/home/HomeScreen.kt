@@ -14,6 +14,10 @@ import androidx.compose.ui.unit.dp
 import com.example.tradingagent.ui.components.SummaryMetricTile
 import com.example.tradingagent.ui.components.WireframeButton
 import com.example.tradingagent.ui.components.WireframeCard
+import com.example.tradingagent.ui.components.SignalBadge
+import com.example.tradingagent.ui.components.ConfidenceText
+import com.example.tradingagent.ui.components.LegendRow
+import androidx.compose.foundation.clickable
 
 import com.example.tradingagent.data.api.PortfolioResponse
 import com.example.tradingagent.data.api.Position
@@ -103,33 +107,35 @@ fun HomeScreen(
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 WireframeButton("View Pos", onClick = onNavigateToPositions, modifier = Modifier.weight(1f), isPrimary = false)
                 WireframeButton("Signals", onClick = onNavigateToSignals, modifier = Modifier.weight(1f), isPrimary = false)
-                WireframeButton("Trade", onClick = onNavigateToTrades, modifier = Modifier.weight(1f))
+                WireframeButton("Trade", onClick = onNavigateToTrades, modifier = Modifier.weight(1f), isPrimary = false)
             }
 
-            // Highlights
-            Text("Highlights", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            // Agent Intelligence
+            Text("Agent Intelligence", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             WireframeCard {
-                val topSignal = signals.firstOrNull { it.signal != "HOLD" }
-                if (topSignal != null) {
-                    Text("Top Signal: ${topSignal.symbol} (${topSignal.signal})", fontWeight = FontWeight.Bold)
-                    Text("AI reasoning: ${topSignal.aiReason ?: "Algorithm selected based on trend scores."}")
+                LegendRow(modifier = Modifier.padding(bottom = 12.dp))
+                if (signals.isEmpty()) {
+                    Text("No ML signals available.", style = MaterialTheme.typography.bodyMedium)
                 } else {
-                    Text("Top Signal: None", fontWeight = FontWeight.Bold)
-                    Text("No immediate actionable signals.")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                WireframeButton(
-                    "View Detail",
-                    onClick = {
-                        if (topSignal != null) {
-                            onStockClick(topSignal.symbol)
-                        } else {
-                            onNavigateToSignals()
+                    signals.take(3).forEach { signal ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { onStockClick(signal.symbol) },
+                            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    Text(signal.symbol, fontWeight = FontWeight.Bold)
+                                    SignalBadge(signal = signal.signal ?: "HOLD")
+                                }
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(signal.aiReason ?: "Algorithm selected based on trend scores.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            }
+                            ConfidenceText(confidence = signal.confidence ?: 0.85)
                         }
-                    },
-                    isPrimary = false,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                    }
+                }
             }
 
             // Recent Activity

@@ -13,7 +13,69 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.clickable
+import com.example.tradingagent.theme.*
 
+@Composable
+fun SignalBadge(signal: String, modifier: Modifier = Modifier) {
+    val (bgColor, textColor) = when (signal.uppercase()) {
+        "BUY" -> SignalBuyGreen.copy(alpha = 0.2f) to SignalBuyGreen
+        "SELL" -> SignalSellRed.copy(alpha = 0.2f) to SignalSellRed
+        "GATED" -> SignalGatedAmber.copy(alpha = 0.2f) to SignalGatedAmber
+        else -> SignalNeutralGray.copy(alpha = 0.2f) to SignalNeutralGray
+    }
+    
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(bgColor)
+            .padding(horizontal = 6.dp, vertical = 2.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = signal.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            color = textColor,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun ConfidenceText(confidence: Double, modifier: Modifier = Modifier) {
+    val color = when {
+        confidence >= 0.8 -> SignalBuyGreen
+        confidence >= 0.6 -> SignalWarmingOrange
+        else -> SignalSellRed
+    }
+    Text(
+        text = "${(confidence * 100).toInt()}%",
+        color = color,
+        style = MaterialTheme.typography.bodyMedium,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun LegendRow(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        LegendItem("BUY", SignalBuyGreen)
+        LegendItem("SELL", SignalSellRed)
+        LegendItem("GATED", SignalGatedAmber)
+        LegendItem("HOLD", SignalNeutralGray)
+    }
+}
+
+@Composable
+private fun LegendItem(label: String, color: Color) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(color))
+        Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
 @Composable
 fun WireframeCard(
     modifier: Modifier = Modifier,
