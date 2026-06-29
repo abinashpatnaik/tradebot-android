@@ -70,7 +70,7 @@ fun SettingsScreen(
                     visualTransformation = PasswordVisualTransformation(),
                     modifier = Modifier.fillMaxWidth()
                 )
-                Divider(modifier = Modifier.padding(vertical = 16.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
                 Text("Sign Out", color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 8.dp))
             }
 
@@ -101,27 +101,48 @@ fun SettingsScreen(
             Text("Notifications", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             WireframeCard {
                 SettingsToggleRow("Trade Executed", true)
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 SettingsToggleRow("Signal Detected", true)
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 SettingsToggleRow("Risk Alert", true)
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 SettingsToggleRow("Market Open/Close", false)
             }
 
             // Appearance Group
             Text("Appearance", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             WireframeCard {
-                SettingsRow("Theme", "System Default")
+                var currentTheme by remember { mutableStateOf(settingsManager.darkMode) }
+                Text("Theme", modifier = Modifier.padding(bottom = 8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    WireframeButton(
+                        "Light", 
+                        onClick = { currentTheme = false; settingsManager.darkMode = false }, 
+                        modifier = Modifier.weight(1f), 
+                        isPrimary = currentTheme == false
+                    )
+                    WireframeButton(
+                        "Gray", 
+                        onClick = { currentTheme = true; settingsManager.darkMode = true }, 
+                        modifier = Modifier.weight(1f), 
+                        isPrimary = currentTheme == true
+                    )
+                    WireframeButton(
+                        "System", 
+                        onClick = { currentTheme = null; settingsManager.darkMode = null }, 
+                        modifier = Modifier.weight(1f), 
+                        isPrimary = currentTheme == null
+                    )
+                }
             }
 
             // About Group
             Text("About", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             WireframeCard {
                 SettingsRow("App Version", "1.0.0-wireframe")
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 SettingsRow("Environment", "Production")
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 Text("Support & Help", color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(vertical = 8.dp))
             }
 
