@@ -42,13 +42,14 @@ fun SignalBadge(signal: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun ConfidenceText(confidence: Double, modifier: Modifier = Modifier) {
+    val normalizedConfidence = if (confidence > 1.0) confidence / 100.0 else confidence
     val color = when {
-        confidence >= 0.8 -> SignalBuyGreen
-        confidence >= 0.6 -> SignalWarmingOrange
+        normalizedConfidence >= 0.8 -> SignalBuyGreen
+        normalizedConfidence >= 0.6 -> SignalWarmingOrange
         else -> SignalSellRed
     }
     Text(
-        text = "${(confidence * 100).toInt()}%",
+        text = "${(normalizedConfidence * 100).toInt()}%",
         color = color,
         style = MaterialTheme.typography.bodyMedium,
         fontWeight = FontWeight.Bold,
