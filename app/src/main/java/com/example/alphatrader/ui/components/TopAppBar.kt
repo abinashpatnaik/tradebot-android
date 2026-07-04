@@ -23,6 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.alphatrader.theme.*
 
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.SettingsBrightness
+import androidx.compose.material3.IconButton
+import com.example.alphatrader.data.ThemeMode
+
 enum class AgentStatus {
     LIVE, CLOSED, SLEEPING
 }
@@ -36,13 +41,15 @@ enum class MarketRegion {
 fun AlphaTopAppBar(
     marketRegion: MarketRegion,
     onMarketToggle: () -> Unit,
-    portfolio: PortfolioResponse?
+    portfolio: PortfolioResponse?,
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
+    onThemeToggle: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(BgPrimary)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -50,24 +57,39 @@ fun AlphaTopAppBar(
         // Logo and Title
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable { onMarketToggle() }
         ) {
-            Text(
-                text = "⚡",
-                color = BrandGreen,
-                style = MaterialTheme.typography.headlineLarge
-            )
+            Row(modifier = Modifier.clickable { onMarketToggle() }, verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "⚡",
+                    color = BrandGreen,
+                    style = MaterialTheme.typography.headlineLarge
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Alpha",
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = if (marketRegion == MarketRegion.US) "🇺🇸" else "🇮🇳",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
+            
             Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "Alpha",
-                color = TextPrimary,
-                style = MaterialTheme.typography.titleLarge
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = if (marketRegion == MarketRegion.US) "🇺🇸" else "🇮🇳",
-                style = MaterialTheme.typography.titleLarge
-            )
+            
+            IconButton(onClick = onThemeToggle) {
+                Icon(
+                    imageVector = when (themeMode) {
+                        ThemeMode.SYSTEM -> Icons.Filled.SettingsBrightness
+                        ThemeMode.LIGHT -> Icons.Filled.LightMode
+                        ThemeMode.DARK -> Icons.Filled.DarkMode
+                    },
+                    contentDescription = "Toggle Theme",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
         // Status Row
@@ -111,12 +133,12 @@ fun StatusBadge(status: AgentStatus, text: String) {
     val bgColor = when (status) {
         AgentStatus.LIVE -> BrandGreenDim
         AgentStatus.CLOSED -> BrandRedDim
-        AgentStatus.SLEEPING -> BgSurfaceRaised
+        AgentStatus.SLEEPING -> MaterialTheme.colorScheme.surfaceVariant
     }
     val textColor = when (status) {
         AgentStatus.LIVE -> BrandGreen
         AgentStatus.CLOSED -> BrandRed
-        AgentStatus.SLEEPING -> TextSecondary
+        AgentStatus.SLEEPING -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")

@@ -97,4 +97,7 @@ dependencies {
   // Charting
   implementation(libs.vico.compose)
   implementation(libs.vico.compose.m3)
+
+  // Biometric Auth
+  implementation(libs.androidx.biometric)
 }

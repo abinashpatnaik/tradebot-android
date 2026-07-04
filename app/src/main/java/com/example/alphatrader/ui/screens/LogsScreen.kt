@@ -27,7 +27,7 @@ fun LogsScreen(viewModel: DashboardViewModel = viewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BgPrimary)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -38,7 +38,7 @@ fun LogsScreen(viewModel: DashboardViewModel = viewModel()) {
                 Text(
                     text = "SYSTEM ALERTS",
                     style = MaterialTheme.typography.titleMedium,
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp)
                 )
             }
@@ -47,7 +47,7 @@ fun LogsScreen(viewModel: DashboardViewModel = viewModel()) {
                     Text(
                         text = "✅ System Healthy - No severe alerts",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 16.dp)
                     )
                 }
@@ -67,7 +67,7 @@ fun LogsScreen(viewModel: DashboardViewModel = viewModel()) {
                 Text(
                     text = "EXECUTION HISTORY",
                     style = MaterialTheme.typography.titleMedium,
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 16.dp, top = 32.dp, bottom = 4.dp)
                 )
             }

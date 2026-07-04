@@ -1,6 +1,7 @@
 package com.example.alphatrader.data.network
 
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -39,7 +40,25 @@ data class TradeResponse(
     val symbol: String,
     val action: String,
     val price: Double,
-    val pnl: String?
+    val pnl: String?,
+    val quantity: Double?
+)
+
+data class ChartDataPoint(
+    val date: String,
+    val price: Double
+)
+
+data class StockSummary(
+    val totalBought: Double,
+    val totalSold: Double,
+    val totalPnl: Double
+)
+
+data class StockDetailsResponse(
+    val chartData: List<ChartDataPoint>,
+    val summary: StockSummary,
+    val trades: List<TradeResponse>
 )
 
 data class TickerWrapper(val ticker: List<TickerNetworkItem>)
@@ -78,6 +97,12 @@ interface ApiService {
     
     @GET("/api/logs")
     suspend fun getLogs(): List<String>
+
+    @GET("api/ticker")
+    suspend fun getTicker(): List<TickerNetworkItem>
+
+    @GET("api/stock/{symbol}")
+    suspend fun getStockDetails(@Path("symbol") symbol: String): StockDetailsResponse
     
     @GET("/api/ticker")
     suspend fun getTickers(): TickerWrapper

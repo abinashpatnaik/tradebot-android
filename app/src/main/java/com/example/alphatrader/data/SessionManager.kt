@@ -3,6 +3,12 @@ package com.example.alphatrader.data
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.alphatrader.BuildConfig
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+enum class ThemeMode {
+    SYSTEM, LIGHT, DARK
+}
 
 class SessionManager(context: Context) {
     private val prefs: SharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -22,6 +28,16 @@ class SessionManager(context: Context) {
     val isLoggedIn: Boolean
         get() = username.isNotBlank() && password.isNotBlank()
 
+    private val _themeMode = MutableStateFlow(
+        ThemeMode.valueOf(prefs.getString(KEY_THEME_MODE, ThemeMode.SYSTEM.name) ?: ThemeMode.SYSTEM.name)
+    )
+    val themeMode = _themeMode.asStateFlow()
+
+    fun setThemeMode(mode: ThemeMode) {
+        prefs.edit().putString(KEY_THEME_MODE, mode.name).apply()
+        _themeMode.value = mode
+    }
+
     fun clear() {
         prefs.edit().clear().apply()
     }
@@ -31,6 +47,7 @@ class SessionManager(context: Context) {
         private const val KEY_SERVER_URL = "server_url"
         private const val KEY_USERNAME = "username"
         private const val KEY_PASSWORD = "password"
+        private const val KEY_THEME_MODE = "theme_mode"
         
         @Volatile
         private var instance: SessionManager? = null
