@@ -89,9 +89,28 @@ interface ApiService {
 }
 
 object RetrofitClient {
+    private val okHttpClient: okhttp3.OkHttpClient by lazy {
+        okhttp3.OkHttpClient.Builder().apply {
+            if (BuildConfig.API_USERNAME.isNotBlank() && BuildConfig.API_PASSWORD.isNotBlank()) {
+                val credentials = okhttp3.Credentials.basic(BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD)
+                addInterceptor { chain ->
+                    val request = chain.request().newBuilder()
+                        .header("Authorization", credentials)
+                        .build()
+                    chain.proceed(request)
+                }
+            }
+            val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
+                level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+            }
+            addInterceptor(logging)
+        }.build()
+    }
+
     private val usInstance: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.US_API_BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
@@ -100,6 +119,7 @@ object RetrofitClient {
     private val inInstance: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BuildConfig.IN_API_BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
