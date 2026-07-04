@@ -5,17 +5,18 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tradingagent"
+    namespace = "com.example.alphatrader"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.example.tradingagent"
+        applicationId = "com.example.alphatrader"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         
-        val apiIp = project.findProperty("API_IP") as? String ?: "10.0.2.2"
-        buildConfigField("String", "DEFAULT_API_URL", "\"http://$apiIp:3001\"")
+        val apiIp = project.findProperty("API_IP") as? String ?: "localhost"
+        buildConfigField("String", "US_API_BASE_URL", "\"http://$apiIp:3001\"")
+        buildConfigField("String", "IN_API_BASE_URL", "\"http://$apiIp:3002\"")
     }
 
     buildTypes {
@@ -64,6 +65,7 @@ dependencies {
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.compose.material3)
+  implementation(libs.androidx.compose.material.icons.extended)
   // Tooling
   debugImplementation(libs.androidx.compose.ui.tooling)
   // Instrumented tests
@@ -81,18 +83,14 @@ dependencies {
   androidTestImplementation(libs.androidx.test.espresso.core)
 
   // Navigation
-  implementation(libs.androidx.navigation3.ui)
-  implementation(libs.androidx.navigation3.runtime)
-  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+  implementation(libs.androidx.navigation.compose)
 
   // Networking
-  implementation(libs.okhttp)
-  implementation(libs.kotlinx.serialization.json)
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.converter.gson)
+  implementation(libs.okhttp.logging)
 
-  // Icons
-  implementation(libs.compose.material.icons.extended)
-
-  // Auth
-  implementation(libs.androidx.appcompat)
-  implementation(libs.androidx.biometric)
+  // Charting
+  implementation(libs.vico.compose)
+  implementation(libs.vico.compose.m3)
 }
