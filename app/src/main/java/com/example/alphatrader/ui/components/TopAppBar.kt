@@ -1,5 +1,7 @@
 package com.example.alphatrader.ui.components
 
+import com.example.alphatrader.data.network.PortfolioResponse
+
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +31,6 @@ enum class MarketRegion {
     US, IN
 }
 
-import com.example.alphatrader.data.network.PortfolioResponse
 
 @Composable
 fun AlphaTopAppBar(
