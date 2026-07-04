@@ -29,12 +29,13 @@ enum class MarketRegion {
     US, IN
 }
 
+import com.example.alphatrader.data.network.PortfolioResponse
+
 @Composable
 fun AlphaTopAppBar(
     marketRegion: MarketRegion,
     onMarketToggle: () -> Unit,
-    status: AgentStatus,
-    statusText: String
+    portfolio: PortfolioResponse?
 ) {
     Row(
         modifier = Modifier
@@ -57,27 +58,39 @@ fun AlphaTopAppBar(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Alpha Trader",
+                text = "Alpha",
                 color = TextPrimary,
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = if (marketRegion == MarketRegion.US) "🇺🇸" else "🇮🇳",
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.titleLarge
             )
         }
 
         // Status Row
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Default.LightMode,
-                contentDescription = "Theme Toggle",
-                tint = TextSecondary,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            StatusBadge(status = status, text = statusText)
+            if (portfolio != null) {
+                // Market Status Badge
+                if (portfolio.marketOpen) {
+                    StatusBadge(status = AgentStatus.LIVE, text = "Market Open")
+                } else {
+                    val text = if (!portfolio.nextOpen.isNullOrEmpty()) {
+                        "Market Closed (Opens: ${portfolio.nextOpen})"
+                    } else {
+                        "Market Closed"
+                    }
+                    StatusBadge(status = AgentStatus.CLOSED, text = text)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                // Agent Status Badge
+                val agentStatusEnum = if (portfolio.agentStatus == "running") AgentStatus.LIVE else AgentStatus.SLEEPING
+                val agentText = if (portfolio.agentStatus == "running") "Agent Running" else "Agent Sleeping"
+                StatusBadge(status = agentStatusEnum, text = agentText)
+            } else {
+                StatusBadge(status = AgentStatus.SLEEPING, text = "Connecting...")
+            }
         }
     }
 }

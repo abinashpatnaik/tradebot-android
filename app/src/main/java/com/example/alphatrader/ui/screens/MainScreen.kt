@@ -47,12 +47,7 @@ fun MainScreen(viewModel: DashboardViewModel = viewModel()) {
             AlphaTopAppBar(
                 marketRegion = state.marketRegion,
                 onMarketToggle = { viewModel.toggleMarket() },
-                status = state.agentStatus,
-                statusText = when(state.agentStatus) {
-                    AgentStatus.LIVE -> "Live 10:45"
-                    AgentStatus.SLEEPING -> "Observing"
-                    else -> "Closed"
-                }
+                portfolio = state.portfolio
             )
         },
         bottomBar = {

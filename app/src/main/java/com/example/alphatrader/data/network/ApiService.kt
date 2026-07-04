@@ -19,7 +19,8 @@ data class PortfolioResponse(
     val tradesToday: Int,
     val lifetimeRealizedPnl: Double,
     val agentStatus: String,
-    val marketOpen: Boolean
+    val marketOpen: Boolean,
+    val nextOpen: String?
 )
 
 data class SignalResponse(
