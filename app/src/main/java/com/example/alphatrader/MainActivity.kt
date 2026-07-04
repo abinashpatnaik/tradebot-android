@@ -101,7 +101,11 @@ class MainActivity : FragmentActivity() {
                                         navController.navigate("biometric_lock") {
                                             popUpTo("auth") { inclusive = true }
                                         }
-                                        promptBiometric()
+                                        promptBiometric {
+                                            navController.navigate("main") {
+                                                popUpTo("biometric_lock") { inclusive = true }
+                                            }
+                                        }
                                     } else {
                                         navController.navigate("main") {
                                             popUpTo("auth") { inclusive = true }
@@ -111,15 +115,32 @@ class MainActivity : FragmentActivity() {
                             )
                         }
                         composable("biometric_lock") {
-                            LaunchedEffect(isBiometricUnlocked) {
-                                if (isBiometricUnlocked) {
-                                    navController.navigate("main") {
-                                        popUpTo("biometric_lock") { inclusive = true }
+                            val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+                            
+                            androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+                                val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                                    if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                                        if (!isBiometricUnlocked) {
+                                            promptBiometric {
+                                                navController.navigate("main") {
+                                                    popUpTo("biometric_lock") { inclusive = true }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
+                                lifecycleOwner.lifecycle.addObserver(observer)
+                                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
                             }
+
                             BiometricLockScreen(
-                                onAuthenticateClick = { promptBiometric() },
+                                onAuthenticateClick = { 
+                                    promptBiometric {
+                                        navController.navigate("main") {
+                                            popUpTo("biometric_lock") { inclusive = true }
+                                        }
+                                    }
+                                },
                                 errorMessage = biometricErrorMessage
                             )
                         }
@@ -137,14 +158,10 @@ class MainActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Auto-prompt biometric when returning to the lock screen
-        val sessionManager = SessionManager.getInstance(this)
-        if (sessionManager.isLoggedIn && biometricAvailable && !isBiometricUnlocked) {
-            promptBiometric()
-        }
+        // Removed auto-prompt from here. It is now handled in the Composable's LifecycleEventObserver.
     }
 
-    private fun promptBiometric() {
+    private fun promptBiometric(onSuccess: () -> Unit) {
         val executor = ContextCompat.getMainExecutor(this)
 
         val callback = object : BiometricPrompt.AuthenticationCallback() {
@@ -152,6 +169,7 @@ class MainActivity : FragmentActivity() {
                 super.onAuthenticationSucceeded(result)
                 isBiometricUnlocked = true
                 biometricErrorMessage = null
+                onSuccess()
             }
 
             override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
