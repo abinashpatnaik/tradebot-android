@@ -71,20 +71,30 @@ fun AlphaTopAppBar(
         }
 
         // Status Row
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Center
+        ) {
             if (portfolio != null) {
                 // Market Status Badge
-                if (portfolio.marketOpen) {
-                    StatusBadge(status = AgentStatus.LIVE, text = "Market Open")
+                val marketText = if (portfolio.marketOpen) {
+                    "Market Open"
                 } else {
-                    val text = if (!portfolio.nextOpen.isNullOrEmpty()) {
-                        "Market Closed (Opens: ${portfolio.nextOpen})"
-                    } else {
-                        "Market Closed"
-                    }
-                    StatusBadge(status = AgentStatus.CLOSED, text = text)
+                    val nextOpenFormatted = if (!portfolio.nextOpen.isNullOrEmpty()) {
+                        try {
+                            val zdt = java.time.ZonedDateTime.parse(portfolio.nextOpen)
+                            val formatter = java.time.format.DateTimeFormatter.ofPattern("EEE HH:mm")
+                            " (Opens ${zdt.format(formatter)})"
+                        } catch (e: Exception) {
+                            ""
+                        }
+                    } else ""
+                    "Closed$nextOpenFormatted"
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                StatusBadge(status = if (portfolio.marketOpen) AgentStatus.LIVE else AgentStatus.CLOSED, text = marketText)
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                
                 // Agent Status Badge
                 val agentStatusEnum = if (portfolio.agentStatus == "running") AgentStatus.LIVE else AgentStatus.SLEEPING
                 val agentText = if (portfolio.agentStatus == "running") "Agent Running" else "Agent Sleeping"
@@ -122,10 +132,10 @@ fun StatusBadge(status: AgentStatus, text: String) {
 
     Row(
         modifier = Modifier
-            .height(28.dp)
-            .clip(RoundedCornerShape(14.dp))
+            .height(22.dp)
+            .clip(RoundedCornerShape(11.dp))
             .background(bgColor)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (status == AgentStatus.LIVE || status == AgentStatus.CLOSED) {
@@ -136,12 +146,12 @@ fun StatusBadge(status: AgentStatus, text: String) {
                     .background(textColor)
                     .alpha(if (status == AgentStatus.LIVE) alpha else 1f)
             )
-            Spacer(modifier = Modifier.width(6.dp))
+            Spacer(modifier = Modifier.width(4.dp))
         }
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.Bold
         )
     }
