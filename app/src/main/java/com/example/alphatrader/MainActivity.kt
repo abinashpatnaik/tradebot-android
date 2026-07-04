@@ -15,6 +15,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -110,6 +111,13 @@ class MainActivity : FragmentActivity() {
                             )
                         }
                         composable("biometric_lock") {
+                            LaunchedEffect(isBiometricUnlocked) {
+                                if (isBiometricUnlocked) {
+                                    navController.navigate("main") {
+                                        popUpTo("biometric_lock") { inclusive = true }
+                                    }
+                                }
+                            }
                             BiometricLockScreen(
                                 onAuthenticateClick = { promptBiometric() },
                                 errorMessage = biometricErrorMessage
