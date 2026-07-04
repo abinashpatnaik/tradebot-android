@@ -89,16 +89,42 @@ interface ApiService {
 }
 
 object RetrofitClient {
+    private var sessionManager: com.example.alphatrader.data.SessionManager? = null
+
+    fun initialize(manager: com.example.alphatrader.data.SessionManager) {
+        sessionManager = manager
+    }
+
     private val okHttpClient: okhttp3.OkHttpClient by lazy {
         okhttp3.OkHttpClient.Builder().apply {
-            if (BuildConfig.API_USERNAME.isNotBlank() && BuildConfig.API_PASSWORD.isNotBlank()) {
-                val credentials = okhttp3.Credentials.basic(BuildConfig.API_USERNAME, BuildConfig.API_PASSWORD)
-                addInterceptor { chain ->
-                    val request = chain.request().newBuilder()
+            addInterceptor { chain ->
+                var request = chain.request()
+
+                val username = sessionManager?.username ?: ""
+                val password = sessionManager?.password ?: ""
+                if (username.isNotBlank() && password.isNotBlank()) {
+                    val credentials = okhttp3.Credentials.basic(username, password)
+                    request = request.newBuilder()
                         .header("Authorization", credentials)
                         .build()
-                    chain.proceed(request)
                 }
+
+                val customUrl = sessionManager?.serverUrl
+                if (!customUrl.isNullOrBlank()) {
+                    val parsedUrl = okhttp3.HttpUrl.parse(customUrl)
+                    if (parsedUrl != null) {
+                        val newUrl = request.url().newBuilder()
+                            .scheme(parsedUrl.scheme())
+                            .host(parsedUrl.host())
+                            // We intentionally keep the original port (3001 vs 3002)
+                            .build()
+                        request = request.newBuilder()
+                            .url(newUrl)
+                            .build()
+                    }
+                }
+
+                chain.proceed(request)
             }
             val logging = okhttp3.logging.HttpLoggingInterceptor().apply {
                 level = okhttp3.logging.HttpLoggingInterceptor.Level.BODY
