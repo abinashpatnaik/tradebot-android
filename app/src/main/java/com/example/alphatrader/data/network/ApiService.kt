@@ -111,16 +111,18 @@ object RetrofitClient {
 
                 val customUrl = sessionManager?.serverUrl
                 if (!customUrl.isNullOrBlank()) {
-                    val parsedUrl = okhttp3.HttpUrl.Companion.parse(customUrl)
-                    if (parsedUrl != null) {
+                    try {
+                        val uri = java.net.URI(customUrl)
                         val newUrl = request.url.newBuilder()
-                            .scheme(parsedUrl.scheme)
-                            .host(parsedUrl.host)
+                            .scheme(uri.scheme)
+                            .host(uri.host)
                             // We intentionally keep the original port (3001 vs 3002)
                             .build()
                         request = request.newBuilder()
                             .url(newUrl)
                             .build()
+                    } catch (e: Exception) {
+                        // ignore malformed URLs
                     }
                 }
 
