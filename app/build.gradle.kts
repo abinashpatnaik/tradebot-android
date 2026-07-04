@@ -13,6 +13,9 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        
+        val apiIp = project.findProperty("API_IP") as? String ?: "10.0.2.2"
+        buildConfigField("String", "DEFAULT_API_URL", "\"http://$apiIp:3001\"")
     }
 
     buildTypes {
@@ -28,7 +31,7 @@ android {
     buildFeatures {
       compose = true
       aidl = false
-      buildConfig = false
+      buildConfig = true
       shaders = false
     }
 

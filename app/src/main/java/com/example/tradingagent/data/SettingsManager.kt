@@ -120,7 +120,7 @@ class SettingsManager(context: Context) {
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_PIN_HASH = "pin_hash"
 
-        const val DEFAULT_SERVER_URL = "http://10.0.2.2:3001"
+        val DEFAULT_SERVER_URL = com.example.tradingagent.BuildConfig.DEFAULT_API_URL
         const val DEFAULT_REFRESH_SECONDS = 5
 
         // Tri-state for dark mode stored as Int
