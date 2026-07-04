@@ -98,13 +98,25 @@ class DashboardViewModel : ViewModel() {
                     )
                 }
                 
-                val mappedDecisionLogs = logsNet.map { logString ->
-                    DecisionLogItem(
-                        icon = "ℹ️",
-                        title = "System Log",
-                        subtitle = logString,
-                        timestamp = ""
-                    )
+                val mappedDecisionLogs = logsNet.mapNotNull { logString ->
+                    if (logString.contains("| ERROR |") || logString.contains("| CRITICAL |") || logString.contains("ERROR") || logString.contains("CRITICAL")) {
+                        val lowerLog = logString.lowercase()
+                        val isIgnorable = listOf("timeout", "retry", "connection", "network").any { lowerLog.contains(it) }
+                        
+                        // Try to extract timestamp if it starts with one, else leave blank
+                        val timestampRegex = Regex("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")
+                        val match = timestampRegex.find(logString)
+                        val timestamp = match?.value ?: ""
+                        
+                        DecisionLogItem(
+                            icon = if (isIgnorable) "⚠️" else "🚨",
+                            title = if (isIgnorable) "Ignorable Error" else "Severe Error",
+                            subtitle = logString,
+                            timestamp = timestamp
+                        )
+                    } else {
+                        null
+                    }
                 }.takeLast(20).reversed()
                 
                 _uiState.value = _uiState.value.copy(
