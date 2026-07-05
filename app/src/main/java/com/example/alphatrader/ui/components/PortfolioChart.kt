@@ -30,8 +30,11 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
 
 @Composable
-fun PortfolioChartCard(history: List<NavHistoryItem> = emptyList()) {
-    var selectedTimeRange by remember { mutableStateOf("1D") }
+fun PortfolioChartCard(
+    history: List<NavHistoryItem> = emptyList(),
+    selectedRange: String = "1D",
+    onRangeSelected: (String) -> Unit = {}
+) {
     val timeRanges = listOf("1D", "1W", "1M", "3M", "1Y")
     
     val modelProducer = remember { CartesianChartModelProducer() }
@@ -71,8 +74,8 @@ fun PortfolioChartCard(history: List<NavHistoryItem> = emptyList()) {
                     timeRanges.forEach { range ->
                         TimeRangeChip(
                             text = range,
-                            isSelected = range == selectedTimeRange,
-                            onClick = { selectedTimeRange = range }
+                            isSelected = range == selectedRange,
+                            onClick = { onRangeSelected(range) }
                         )
                     }
                 }

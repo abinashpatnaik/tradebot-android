@@ -40,6 +40,7 @@ data class DashboardState(
     val agentStatus: AgentStatus = AgentStatus.LIVE,
     val portfolio: PortfolioResponse? = null,
     val analytics: AnalyticsResponse? = null,
+    val selectedNavRange: String = "1D",
     val navHistory: List<NavHistoryItem> = emptyList(),
     val signals: List<SignalResponse> = emptyList(),
     val tickers: List<TickerItem> = emptyList(),
@@ -78,7 +79,16 @@ class DashboardViewModel : ViewModel() {
                 val tickersNet = api.getTickers()
                 
                 val analyticsNet = try { api.getAnalytics() } catch (e: Exception) { null }
-                val navHistoryNet = try { api.getNavHistory() } catch (e: Exception) { emptyList() }
+                
+                val apiRange = when(_uiState.value.selectedNavRange) {
+                    "1D" -> "1d"
+                    "1W" -> "5d"
+                    "1M" -> "1mo"
+                    "3M" -> "3mo"
+                    "1Y" -> "1y"
+                    else -> "1d"
+                }
+                val navHistoryNet = try { api.getNavHistory(apiRange) } catch (e: Exception) { emptyList() }
                 
                 val status = if (portfolio.agentStatus == "running") AgentStatus.LIVE else AgentStatus.SLEEPING
                 
@@ -176,5 +186,26 @@ class DashboardViewModel : ViewModel() {
             selectedStockSymbol = null,
             stockDetails = null
         )
+    }
+
+    fun updateNavRange(range: String) {
+        _uiState.value = _uiState.value.copy(selectedNavRange = range)
+        viewModelScope.launch {
+            try {
+                val api = RetrofitClient.getInstance(if (_uiState.value.marketRegion == MarketRegion.US) "US" else "IN")
+                val apiRange = when(range) {
+                    "1D" -> "1d"
+                    "1W" -> "5d"
+                    "1M" -> "1mo"
+                    "3M" -> "3mo"
+                    "1Y" -> "1y"
+                    else -> "1d"
+                }
+                val navHistoryNet = api.getNavHistory(apiRange)
+                _uiState.value = _uiState.value.copy(navHistory = navHistoryNet)
+            } catch (e: Exception) {
+                // Ignore error, keep existing history
+            }
+        }
     }
 }

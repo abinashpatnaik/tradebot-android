@@ -80,7 +80,11 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
 
                 // 3. Portfolio Chart
                 item {
-                    PortfolioChartCard(history = state.navHistory)
+                    PortfolioChartCard(
+                        history = state.navHistory,
+                        selectedRange = state.selectedNavRange,
+                        onRangeSelected = { viewModel.updateNavRange(it) }
+                    )
                 }
 
                 // 4. Analytics Panel
