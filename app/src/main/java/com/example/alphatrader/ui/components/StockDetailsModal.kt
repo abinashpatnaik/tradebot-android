@@ -37,6 +37,7 @@ import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 
 @Composable
 fun StockDetailsModal(
@@ -199,8 +200,11 @@ fun StockChart(chartData: List<com.example.alphatrader.data.network.ChartDataPoi
                     rememberLineCartesianLayer(
                         rangeProvider = myRangeProvider
                     ),
-                    startAxis = VerticalAxis.rememberStart(),
+                    startAxis = VerticalAxis.rememberStart(
+                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    ),
                     bottomAxis = HorizontalAxis.rememberBottom(
+                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurfaceVariant),
                         valueFormatter = CartesianValueFormatter { context, value, _ ->
                             val index = value.toInt()
                             if (index in chartData.indices) {
