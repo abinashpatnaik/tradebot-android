@@ -105,8 +105,9 @@ fun AlphaTopAppBar(
                     val nextOpenFormatted = if (!portfolio.nextOpen.isNullOrEmpty()) {
                         try {
                             val zdt = java.time.ZonedDateTime.parse(portfolio.nextOpen)
-                            val formatter = java.time.format.DateTimeFormatter.ofPattern("EEE HH:mm")
-                            " (Opens ${zdt.format(formatter)})"
+                            val localZdt = zdt.withZoneSameInstant(java.time.ZoneId.systemDefault())
+                            val formatter = java.time.format.DateTimeFormatter.ofPattern("EEE hh:mm a")
+                            " (Opens ${localZdt.format(formatter)})"
                         } catch (e: Exception) {
                             ""
                         }
