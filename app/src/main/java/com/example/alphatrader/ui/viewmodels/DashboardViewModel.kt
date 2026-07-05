@@ -78,7 +78,7 @@ class DashboardViewModel : ViewModel() {
                 val tickersNet = api.getTickers()
                 
                 val analyticsNet = try { api.getAnalytics() } catch (e: Exception) { null }
-                val navHistoryNet = try { api.getNavHistory().data } catch (e: Exception) { emptyList() }
+                val navHistoryNet = try { api.getNavHistory() } catch (e: Exception) { emptyList() }
                 
                 val status = if (portfolio.agentStatus == "running") AgentStatus.LIVE else AgentStatus.SLEEPING
                 

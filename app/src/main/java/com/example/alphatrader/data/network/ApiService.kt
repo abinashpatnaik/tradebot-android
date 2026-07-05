@@ -82,10 +82,7 @@ data class NavHistoryItem(
     val nav: Double
 )
 
-data class NavHistoryResponse(
-    val data: List<NavHistoryItem>,
-    val period: String
-)
+
 
 interface ApiService {
     @GET("/api/portfolio")
@@ -113,7 +110,7 @@ interface ApiService {
     suspend fun getAnalytics(): AnalyticsResponse
     
     @GET("/api/nav-history")
-    suspend fun getNavHistory(@Query("period") period: String = "1y"): NavHistoryResponse
+    suspend fun getNavHistory(@Query("range") range: String = "1mo"): List<NavHistoryItem>
 }
 
 object RetrofitClient {
