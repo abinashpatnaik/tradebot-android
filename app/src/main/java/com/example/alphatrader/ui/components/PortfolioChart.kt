@@ -28,6 +28,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.Zoom
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 
 @Composable
 fun PortfolioChartCard(
@@ -104,8 +105,12 @@ fun PortfolioChartCard(
                         rememberLineCartesianLayer(
                             rangeProvider = myRangeProvider
                         ),
-                        startAxis = VerticalAxis.rememberStart(),
-                        bottomAxis = HorizontalAxis.rememberBottom(),
+                        startAxis = VerticalAxis.rememberStart(
+                            label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        ),
+                        bottomAxis = HorizontalAxis.rememberBottom(
+                            label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        ),
                     ),
                     modelProducer = modelProducer,
                     zoomState = rememberVicoZoomState(zoomEnabled = false, initialZoom = Zoom.Content, maxZoom = Zoom.Content),
