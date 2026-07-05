@@ -90,12 +90,16 @@ fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
                         SignalAction.HOLD
                     }
                     
-                    val conf = signalResponse.confidence.toInt()
-                    val bullPct = when (actionEnum) {
-                        SignalAction.BUY -> conf
-                        SignalAction.SELL -> 100 - conf
-                        SignalAction.HOLD -> (50 + (signalResponse.trendScore * 15)).toInt().coerceIn(0, 100)
-                        else -> 50
+                    val bullPct = if (signalResponse.mlConfidence != null) {
+                        (signalResponse.mlConfidence * 100).toInt().coerceIn(0, 100)
+                    } else {
+                        val conf = signalResponse.confidence.toInt()
+                        when (actionEnum) {
+                            SignalAction.BUY -> conf
+                            SignalAction.SELL -> 100 - conf
+                            SignalAction.HOLD -> (50 + (signalResponse.trendScore * 15)).toInt().coerceIn(0, 100)
+                            else -> 50
+                        }
                     }
                     val bearPct = 100 - bullPct
                     val reasonStr = signalResponse.aiReason ?: signalResponse.holdReason ?: "Algo"
@@ -104,7 +108,7 @@ fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
                         signal = SignalItem(
                             ticker = signalResponse.symbol,
                             price = signalResponse.price,
-                            score = signalResponse.trendScore,
+                            score = signalResponse.combinedScore ?: signalResponse.trendScore,
                             action = actionEnum,
                             reason = reasonStr,
                             bullPct = bullPct,

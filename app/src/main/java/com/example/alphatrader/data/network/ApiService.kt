@@ -28,10 +28,12 @@ data class SignalResponse(
     val symbol: String,
     val price: Double,
     val trendScore: Double,
+    val combinedScore: Double?,
     val signal: String,
     val aiReason: String?,
     val holdReason: String?,
-    val confidence: Double
+    val confidence: Double,
+    val mlConfidence: Double?
 )
 
 data class TradeResponse(
