@@ -191,8 +191,14 @@ fun StockChart(chartData: List<com.example.alphatrader.data.network.ChartDataPoi
                 object : com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider {
                     override fun getMinX(minX: Double, maxX: Double, extraStore: com.patrykandpatrick.vico.core.common.data.ExtraStore) = minX
                     override fun getMaxX(minX: Double, maxX: Double, extraStore: com.patrykandpatrick.vico.core.common.data.ExtraStore) = maxX
-                    override fun getMinY(minY: Double, maxY: Double, extraStore: com.patrykandpatrick.vico.core.common.data.ExtraStore) = minY * 0.95
-                    override fun getMaxY(minY: Double, maxY: Double, extraStore: com.patrykandpatrick.vico.core.common.data.ExtraStore) = maxY * 1.05
+                    override fun getMinY(minY: Double, maxY: Double, extraStore: com.patrykandpatrick.vico.core.common.data.ExtraStore): Double {
+                        val diff = maxY - minY
+                        return if (diff == 0.0) minY * 0.99 else minY - diff * 0.1
+                    }
+                    override fun getMaxY(minY: Double, maxY: Double, extraStore: com.patrykandpatrick.vico.core.common.data.ExtraStore): Double {
+                        val diff = maxY - minY
+                        return if (diff == 0.0) maxY * 1.01 else maxY + diff * 0.1
+                    }
                 }
             }
             CartesianChartHost(
@@ -201,10 +207,10 @@ fun StockChart(chartData: List<com.example.alphatrader.data.network.ChartDataPoi
                         rangeProvider = myRangeProvider
                     ),
                     startAxis = VerticalAxis.rememberStart(
-                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface)
                     ),
                     bottomAxis = HorizontalAxis.rememberBottom(
-                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                        label = rememberTextComponent(color = MaterialTheme.colorScheme.onSurface),
                         valueFormatter = CartesianValueFormatter { context, value, _ ->
                             val index = value.toInt()
                             if (index in chartData.indices) {
