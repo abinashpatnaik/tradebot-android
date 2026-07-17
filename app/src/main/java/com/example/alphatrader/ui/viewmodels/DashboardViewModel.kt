@@ -10,6 +10,7 @@ import com.example.alphatrader.data.network.NavHistoryItem
 import com.example.alphatrader.data.network.PositionResponse
 import com.example.alphatrader.data.network.StockDetailsResponse
 import com.example.alphatrader.data.network.TradeResponse
+import com.example.alphatrader.data.network.VettingResponse
 import com.example.alphatrader.ui.components.AgentStatus
 import com.example.alphatrader.ui.components.MarketRegion
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +48,7 @@ data class DashboardState(
     val signals: List<SignalResponse> = emptyList(),
     val positions: List<PositionResponse> = emptyList(),
     val trades: List<TradeResponse> = emptyList(),
+    val vetting: VettingResponse? = null,
     val tickers: List<TickerItem> = emptyList(),
     val executionLogs: List<ExecutionHistoryItem> = emptyList(),
     val decisionLogs: List<DecisionLogItem> = emptyList(),
@@ -84,6 +86,7 @@ class DashboardViewModel : ViewModel() {
                 
                 val analyticsNet = try { api.getAnalytics() } catch (e: Exception) { null }
                 val positionsNet = try { api.getPositions() } catch (e: Exception) { emptyList() }
+                val vettingNet = try { api.getVetting() } catch (e: Exception) { null }
                 
                 val apiRange = when(_uiState.value.selectedNavRange) {
                     "1D" -> "1d"
@@ -150,6 +153,7 @@ class DashboardViewModel : ViewModel() {
                     signals = signalsNet,
                     positions = positionsNet,
                     trades = tradesNet,
+                    vetting = vettingNet,
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,
                     executionLogs = mappedExecutionLogs,

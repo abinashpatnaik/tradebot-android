@@ -66,6 +66,11 @@ fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
+                // 1b. Stock Vetting (approved / blocked today)
+                item {
+                    VettingPanel(vetting = state.vetting)
+                }
+
                 // 2. Signals Filter
                 item {
                     Spacer(modifier = Modifier.height(16.dp))

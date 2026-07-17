@@ -103,9 +103,28 @@ data class PositionResponse(
 
 
 
+// Today's profit-vetting result: approved targets the bot trades, and the
+// symbols it blocked (with reasons). Mirrors the web /api/vetting endpoint.
+data class VettedTargets(
+    val approved: List<String>? = null,
+    val blocked: Map<String, String>? = null,
+    val session_date: String? = null,
+    val source: String? = null
+)
+
+data class VettingResponse(
+    val available: Boolean = false,
+    val vetted: VettedTargets? = null
+)
+
+
 interface ApiService {
     @GET("/api/positions")
     suspend fun getPositions(): List<PositionResponse>
+
+    @GET("/api/vetting")
+    suspend fun getVetting(): VettingResponse
+
 
     @GET("/api/portfolio")
     suspend fun getPortfolio(): PortfolioResponse
