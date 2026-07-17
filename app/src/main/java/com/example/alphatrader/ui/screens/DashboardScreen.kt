@@ -108,6 +108,14 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
+                // 5. Transactions
+                item {
+                    Transactions(
+                        trades = state.trades,
+                        currencySymbol = currencySymbol
+                    )
+                }
+
             }
         }
     }

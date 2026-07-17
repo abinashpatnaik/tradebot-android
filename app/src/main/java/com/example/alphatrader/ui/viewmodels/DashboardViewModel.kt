@@ -9,6 +9,7 @@ import com.example.alphatrader.data.network.AnalyticsResponse
 import com.example.alphatrader.data.network.NavHistoryItem
 import com.example.alphatrader.data.network.PositionResponse
 import com.example.alphatrader.data.network.StockDetailsResponse
+import com.example.alphatrader.data.network.TradeResponse
 import com.example.alphatrader.ui.components.AgentStatus
 import com.example.alphatrader.ui.components.MarketRegion
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +46,7 @@ data class DashboardState(
     val navHistory: List<NavHistoryItem> = emptyList(),
     val signals: List<SignalResponse> = emptyList(),
     val positions: List<PositionResponse> = emptyList(),
+    val trades: List<TradeResponse> = emptyList(),
     val tickers: List<TickerItem> = emptyList(),
     val executionLogs: List<ExecutionHistoryItem> = emptyList(),
     val decisionLogs: List<DecisionLogItem> = emptyList(),
@@ -147,6 +149,7 @@ class DashboardViewModel : ViewModel() {
                     navHistory = navHistoryNet,
                     signals = signalsNet,
                     positions = positionsNet,
+                    trades = tradesNet,
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,
                     executionLogs = mappedExecutionLogs,

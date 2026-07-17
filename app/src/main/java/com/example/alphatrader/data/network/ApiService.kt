@@ -43,7 +43,8 @@ data class TradeResponse(
     val action: String,
     val price: Double,
     val pnl: String?,
-    val quantity: Double?
+    val quantity: Double?,
+    val exit_reason: String? = null
 )
 
 data class ChartDataPoint(
