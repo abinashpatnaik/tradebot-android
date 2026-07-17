@@ -43,7 +43,8 @@ data class TradeResponse(
     val action: String,
     val price: Double,
     val pnl: String?,
-    val quantity: Double?
+    val quantity: Double?,
+    val exit_reason: String? = null
 )
 
 data class ChartDataPoint(
@@ -82,9 +83,63 @@ data class NavHistoryItem(
     val nav: Double
 )
 
+// Open positions with the executor's REAL protective levels (hard stop +
+// trailing), matching the web /api/positions endpoint.
+data class PositionResponse(
+    val symbol: String,
+    val quantity: Double,
+    val entryPrice: Double,
+    val currentPrice: Double,
+    val marketValue: Double?,
+    val pnl: Double,
+    val pnlPct: Double,
+    val stopLoss: Double,
+    val takeProfit: Double?,
+    val trailingStop: Double,
+    val trailingActive: Boolean = false,
+    val allocation: Double?,
+    val strategy: String?
+)
+
+
+
+// Today's profit-vetting result: approved targets the bot trades, and the
+// symbols it blocked (with reasons). Mirrors the web /api/vetting endpoint.
+data class VettedTargets(
+    val approved: List<String>? = null,
+    val blocked: Map<String, String>? = null,
+    val session_date: String? = null,
+    val source: String? = null
+)
+
+data class VettingResponse(
+    val available: Boolean = false,
+    val vetted: VettedTargets? = null
+)
+
+// The executor's active protective orders (raw hard stop + trailing gap per
+// position). Mirrors the web /api/pending-orders endpoint.
+data class ProtectiveOrderResponse(
+    val symbol: String,
+    val quantity: Double,
+    val entryPrice: Double,
+    val stopLoss: Double,
+    val trailingPct: Double,
+    val fractional: Boolean = false
+)
 
 
 interface ApiService {
+    @GET("/api/positions")
+    suspend fun getPositions(): List<PositionResponse>
+
+    @GET("/api/vetting")
+    suspend fun getVetting(): VettingResponse
+
+    @GET("/api/pending-orders")
+    suspend fun getPendingOrders(): List<ProtectiveOrderResponse>
+
+
     @GET("/api/portfolio")
     suspend fun getPortfolio(): PortfolioResponse
 

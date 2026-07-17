@@ -7,7 +7,11 @@ import com.example.alphatrader.data.network.RetrofitClient
 import com.example.alphatrader.data.network.SignalResponse
 import com.example.alphatrader.data.network.AnalyticsResponse
 import com.example.alphatrader.data.network.NavHistoryItem
+import com.example.alphatrader.data.network.PositionResponse
+import com.example.alphatrader.data.network.ProtectiveOrderResponse
 import com.example.alphatrader.data.network.StockDetailsResponse
+import com.example.alphatrader.data.network.TradeResponse
+import com.example.alphatrader.data.network.VettingResponse
 import com.example.alphatrader.ui.components.AgentStatus
 import com.example.alphatrader.ui.components.MarketRegion
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,6 +47,10 @@ data class DashboardState(
     val selectedNavRange: String = "1D",
     val navHistory: List<NavHistoryItem> = emptyList(),
     val signals: List<SignalResponse> = emptyList(),
+    val positions: List<PositionResponse> = emptyList(),
+    val trades: List<TradeResponse> = emptyList(),
+    val protectiveOrders: List<ProtectiveOrderResponse> = emptyList(),
+    val vetting: VettingResponse? = null,
     val tickers: List<TickerItem> = emptyList(),
     val executionLogs: List<ExecutionHistoryItem> = emptyList(),
     val decisionLogs: List<DecisionLogItem> = emptyList(),
@@ -79,6 +87,9 @@ class DashboardViewModel : ViewModel() {
                 val tickersNet = api.getTickers()
                 
                 val analyticsNet = try { api.getAnalytics() } catch (e: Exception) { null }
+                val positionsNet = try { api.getPositions() } catch (e: Exception) { emptyList() }
+                val vettingNet = try { api.getVetting() } catch (e: Exception) { null }
+                val protectiveOrdersNet = try { api.getPendingOrders() } catch (e: Exception) { emptyList() }
                 
                 val apiRange = when(_uiState.value.selectedNavRange) {
                     "1D" -> "1d"
@@ -143,6 +154,10 @@ class DashboardViewModel : ViewModel() {
                     analytics = analyticsNet,
                     navHistory = navHistoryNet,
                     signals = signalsNet,
+                    positions = positionsNet,
+                    trades = tradesNet,
+                    protectiveOrders = protectiveOrdersNet,
+                    vetting = vettingNet,
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,
                     executionLogs = mappedExecutionLogs,

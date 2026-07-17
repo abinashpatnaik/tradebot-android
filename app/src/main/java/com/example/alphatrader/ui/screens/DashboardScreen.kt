@@ -78,6 +78,22 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     }
                 }
 
+                // 2b. Live Positions
+                item {
+                    LivePositions(
+                        positions = state.positions,
+                        currencySymbol = currencySymbol
+                    )
+                }
+
+                // 2c. Protective Orders
+                item {
+                    ProtectiveOrders(
+                        orders = state.protectiveOrders,
+                        currencySymbol = currencySymbol
+                    )
+                }
+
                 // 3. Portfolio Chart
                 item {
                     PortfolioChartCard(
@@ -97,6 +113,14 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                         portfolioBeta = risk?.beta?.let { String.format("%.2f", it) } ?: "N/A",
                         volAnn = risk?.volatility?.let { "${String.format("%.1f", it)}%" } ?: "N/A",
                         winRate = winRate
+                    )
+                }
+
+                // 5. Transactions
+                item {
+                    Transactions(
+                        trades = state.trades,
+                        currencySymbol = currencySymbol
                     )
                 }
 
