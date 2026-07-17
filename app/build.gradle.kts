@@ -11,8 +11,8 @@ android {
         applicationId = "com.example.alphatrader"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1-redesign"
         
         val apiIp = project.findProperty("API_IP") as? String ?: "localhost"
         val apiUsername = project.findProperty("API_USERNAME") as? String ?: ""
