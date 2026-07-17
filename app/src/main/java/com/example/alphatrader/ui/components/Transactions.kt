@@ -25,7 +25,8 @@ import com.example.alphatrader.theme.BrandRed
 @Composable
 fun Transactions(
     trades: List<TradeResponse>,
-    currencySymbol: String = "$"
+    currencySymbol: String = "$",
+    maxItems: Int = 30
 ) {
     Column(
         modifier = Modifier
@@ -63,7 +64,7 @@ fun Transactions(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                val shown = trades.take(30)
+                val shown = trades.take(maxItems)
                 shown.forEachIndexed { index, t ->
                     TransactionRow(t, currencySymbol)
                     if (index < shown.size - 1) {
