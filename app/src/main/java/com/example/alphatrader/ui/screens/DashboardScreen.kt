@@ -78,6 +78,14 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     }
                 }
 
+                // 2b. Live Positions
+                item {
+                    LivePositions(
+                        positions = state.positions,
+                        currencySymbol = currencySymbol
+                    )
+                }
+
                 // 3. Portfolio Chart
                 item {
                     PortfolioChartCard(

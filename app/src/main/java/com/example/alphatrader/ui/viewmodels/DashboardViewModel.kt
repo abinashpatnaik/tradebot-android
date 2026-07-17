@@ -7,6 +7,7 @@ import com.example.alphatrader.data.network.RetrofitClient
 import com.example.alphatrader.data.network.SignalResponse
 import com.example.alphatrader.data.network.AnalyticsResponse
 import com.example.alphatrader.data.network.NavHistoryItem
+import com.example.alphatrader.data.network.PositionResponse
 import com.example.alphatrader.data.network.StockDetailsResponse
 import com.example.alphatrader.ui.components.AgentStatus
 import com.example.alphatrader.ui.components.MarketRegion
@@ -43,6 +44,7 @@ data class DashboardState(
     val selectedNavRange: String = "1D",
     val navHistory: List<NavHistoryItem> = emptyList(),
     val signals: List<SignalResponse> = emptyList(),
+    val positions: List<PositionResponse> = emptyList(),
     val tickers: List<TickerItem> = emptyList(),
     val executionLogs: List<ExecutionHistoryItem> = emptyList(),
     val decisionLogs: List<DecisionLogItem> = emptyList(),
@@ -79,6 +81,7 @@ class DashboardViewModel : ViewModel() {
                 val tickersNet = api.getTickers()
                 
                 val analyticsNet = try { api.getAnalytics() } catch (e: Exception) { null }
+                val positionsNet = try { api.getPositions() } catch (e: Exception) { emptyList() }
                 
                 val apiRange = when(_uiState.value.selectedNavRange) {
                     "1D" -> "1d"
@@ -143,6 +146,7 @@ class DashboardViewModel : ViewModel() {
                     analytics = analyticsNet,
                     navHistory = navHistoryNet,
                     signals = signalsNet,
+                    positions = positionsNet,
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,
                     executionLogs = mappedExecutionLogs,

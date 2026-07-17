@@ -82,9 +82,30 @@ data class NavHistoryItem(
     val nav: Double
 )
 
+// Open positions with the executor's REAL protective levels (hard stop +
+// trailing), matching the web /api/positions endpoint.
+data class PositionResponse(
+    val symbol: String,
+    val quantity: Double,
+    val entryPrice: Double,
+    val currentPrice: Double,
+    val marketValue: Double?,
+    val pnl: Double,
+    val pnlPct: Double,
+    val stopLoss: Double,
+    val takeProfit: Double?,
+    val trailingStop: Double,
+    val trailingActive: Boolean = false,
+    val allocation: Double?,
+    val strategy: String?
+)
+
 
 
 interface ApiService {
+    @GET("/api/positions")
+    suspend fun getPositions(): List<PositionResponse>
+
     @GET("/api/portfolio")
     suspend fun getPortfolio(): PortfolioResponse
 
