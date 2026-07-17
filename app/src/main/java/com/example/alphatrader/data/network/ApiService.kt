@@ -117,6 +117,17 @@ data class VettingResponse(
     val vetted: VettedTargets? = null
 )
 
+// The executor's active protective orders (raw hard stop + trailing gap per
+// position). Mirrors the web /api/pending-orders endpoint.
+data class ProtectiveOrderResponse(
+    val symbol: String,
+    val quantity: Double,
+    val entryPrice: Double,
+    val stopLoss: Double,
+    val trailingPct: Double,
+    val fractional: Boolean = false
+)
+
 
 interface ApiService {
     @GET("/api/positions")
@@ -124,6 +135,9 @@ interface ApiService {
 
     @GET("/api/vetting")
     suspend fun getVetting(): VettingResponse
+
+    @GET("/api/pending-orders")
+    suspend fun getPendingOrders(): List<ProtectiveOrderResponse>
 
 
     @GET("/api/portfolio")

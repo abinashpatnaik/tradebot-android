@@ -86,6 +86,14 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
+                // 2c. Protective Orders
+                item {
+                    ProtectiveOrders(
+                        orders = state.protectiveOrders,
+                        currencySymbol = currencySymbol
+                    )
+                }
+
                 // 3. Portfolio Chart
                 item {
                     PortfolioChartCard(
