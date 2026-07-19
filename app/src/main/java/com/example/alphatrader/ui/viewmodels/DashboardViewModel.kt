@@ -65,8 +65,9 @@ class DashboardViewModel : ViewModel() {
     val uiState: StateFlow<DashboardState> = _uiState.asStateFlow()
 
     init {
-        // Load initial data (US default)
+        // Load initial data (US default), then keep it live.
         fetchDashboardData(MarketRegion.US)
+        startAutoRefresh()
     }
 
     fun toggleMarket() {
@@ -75,7 +76,22 @@ class DashboardViewModel : ViewModel() {
         fetchDashboardData(newMarket)
     }
 
-    private fun fetchDashboardData(market: MarketRegion) {
+    /** Manually re-fetch the current market (e.g. pull-to-refresh). */
+    fun refresh() {
+        fetchDashboardData(_uiState.value.marketRegion, silent = true)
+    }
+
+    /** Poll the backend on an interval so the dashboard reflects live data. */
+    private fun startAutoRefresh() {
+        viewModelScope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(REFRESH_INTERVAL_MS)
+                fetchDashboardData(_uiState.value.marketRegion, silent = true)
+            }
+        }
+    }
+
+    private fun fetchDashboardData(market: MarketRegion, silent: Boolean = false) {
         viewModelScope.launch {
             try {
                 val api = RetrofitClient.getInstance(if (market == MarketRegion.US) "US" else "IN")
@@ -164,12 +180,20 @@ class DashboardViewModel : ViewModel() {
                     agentStatus = status
                 )
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = "Failed to connect to EC2 server: ${e.message}"
-                )
+                // On a silent auto-refresh, keep the last good data on screen —
+                // a transient blip shouldn't blank the dashboard.
+                if (!silent) {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "Failed to connect to server: ${e.message}"
+                    )
+                }
             }
         }
+    }
+
+    companion object {
+        private const val REFRESH_INTERVAL_MS = 15_000L
     }
 
     fun openStockDetails(symbol: String) {

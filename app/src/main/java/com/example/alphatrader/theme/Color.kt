@@ -7,9 +7,9 @@ val BgSurface = Color(0xFF161920)
 val BgSurfaceRaised = Color(0xFF1E2128)
 val BgOverlay = Color(0xFF252A34)
 
-val BgPrimaryLight = Color(0xFFF8F9FA)
+val BgPrimaryLight = Color(0xFFEDF0F4)
 val BgSurfaceLight = Color(0xFFFFFFFF)
-val BgSurfaceRaisedLight = Color(0xFFF1F3F5)
+val BgSurfaceRaisedLight = Color(0xFFFFFFFF)
 val BgOverlayLight = Color(0xFFE9ECEF)
 
 val BrandGreen = Color(0xFF3FBF87)
@@ -36,6 +36,7 @@ val TextSecondaryLight = Color(0xFF6C757D)
 val TextDisabledLight = Color(0xFFADB5BD)
 
 val BorderSubtle = Color(0xFF2A2D3A)
+val BorderSubtleLight = Color(0xFFE2E6EC)
 
 val StatusLive = Color(0xFF3FBF87)
 val StatusClosed = Color(0xFFEC6A6A)
