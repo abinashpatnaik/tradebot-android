@@ -25,7 +25,8 @@ import com.example.alphatrader.theme.BrandRed
 @Composable
 fun Transactions(
     trades: List<TradeResponse>,
-    currencySymbol: String = "$"
+    currencySymbol: String = "$",
+    maxItems: Int = 30
 ) {
     Column(
         modifier = Modifier
@@ -63,7 +64,7 @@ fun Transactions(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                val shown = trades.take(30)
+                val shown = trades.take(maxItems)
                 shown.forEachIndexed { index, t ->
                     TransactionRow(t, currencySymbol)
                     if (index < shown.size - 1) {
@@ -89,12 +90,18 @@ private fun TransactionRow(t: TradeResponse, currencySymbol: String) {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = t.time,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.width(60.dp)
-        )
+        Column(modifier = Modifier.width(64.dp)) {
+            Text(
+                text = if (t.date.length >= 10) t.date.substring(5) else t.date,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = t.time,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Spacer(modifier = Modifier.width(8.dp))
 
         Column(modifier = Modifier.weight(1f)) {
@@ -102,7 +109,10 @@ private fun TransactionRow(t: TradeResponse, currencySymbol: String) {
                 Text(
                     text = t.symbol,
                     style = MaterialTheme.typography.titleMedium,
-                    color = BrandBlue
+                    color = BrandBlue,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 SignalBadge(action = action, text = t.action)

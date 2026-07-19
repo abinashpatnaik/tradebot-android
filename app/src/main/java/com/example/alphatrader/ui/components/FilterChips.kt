@@ -17,11 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.alphatrader.theme.*
 
-@Composable
-fun FilterChipRow() {
-    var selectedChip by remember { mutableStateOf("All Signals") }
-    val chips = listOf("● All Signals", "Buy Zone", "Sell Alerts", "Gated")
+val SIGNAL_FILTERS = listOf("All Signals", "Buy Zone", "Sell Alerts", "Gated")
 
+@Composable
+fun FilterChipRow(
+    selected: String,
+    onSelect: (String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,9 +31,9 @@ fun FilterChipRow() {
             .padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        chips.forEach { chipName ->
-            val isSelected = chipName.contains(selectedChip) || selectedChip.contains(chipName.replace("● ", ""))
-            
+        SIGNAL_FILTERS.forEach { chipName ->
+            val isSelected = chipName == selected
+
             val bgColor = if (isSelected) BrandGreen else MaterialTheme.colorScheme.surfaceVariant
             val textColor = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
             val modifier = if (isSelected) {
@@ -45,12 +47,12 @@ fun FilterChipRow() {
                     .height(32.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(bgColor)
-                    .clickable { selectedChip = chipName.replace("● ", "") }
+                    .clickable { onSelect(chipName) }
                     .padding(horizontal = 14.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = chipName,
+                    text = if (chipName == "All Signals") "● $chipName" else chipName,
                     color = textColor,
                     style = if (isSelected) MaterialTheme.typography.labelMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold) else MaterialTheme.typography.labelMedium
                 )

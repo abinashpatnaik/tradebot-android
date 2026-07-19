@@ -9,6 +9,7 @@ import com.example.alphatrader.data.network.AnalyticsResponse
 import com.example.alphatrader.data.network.NavHistoryItem
 import com.example.alphatrader.data.network.PositionResponse
 import com.example.alphatrader.data.network.ProtectiveOrderResponse
+import com.example.alphatrader.data.network.FleetResponse
 import com.example.alphatrader.data.network.StockDetailsResponse
 import com.example.alphatrader.data.network.TradeResponse
 import com.example.alphatrader.data.network.VettingResponse
@@ -50,6 +51,8 @@ data class DashboardState(
     val positions: List<PositionResponse> = emptyList(),
     val trades: List<TradeResponse> = emptyList(),
     val protectiveOrders: List<ProtectiveOrderResponse> = emptyList(),
+    val fleet: FleetResponse? = null,
+    val rawLogs: List<String> = emptyList(),
     val vetting: VettingResponse? = null,
     val tickers: List<TickerItem> = emptyList(),
     val executionLogs: List<ExecutionHistoryItem> = emptyList(),
@@ -65,8 +68,9 @@ class DashboardViewModel : ViewModel() {
     val uiState: StateFlow<DashboardState> = _uiState.asStateFlow()
 
     init {
-        // Load initial data (US default)
+        // Load initial data (US default), then keep it live.
         fetchDashboardData(MarketRegion.US)
+        startAutoRefresh()
     }
 
     fun toggleMarket() {
@@ -75,7 +79,22 @@ class DashboardViewModel : ViewModel() {
         fetchDashboardData(newMarket)
     }
 
-    private fun fetchDashboardData(market: MarketRegion) {
+    /** Manually re-fetch the current market (e.g. pull-to-refresh). */
+    fun refresh() {
+        fetchDashboardData(_uiState.value.marketRegion, silent = true)
+    }
+
+    /** Poll the backend on an interval so the dashboard reflects live data. */
+    private fun startAutoRefresh() {
+        viewModelScope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(REFRESH_INTERVAL_MS)
+                fetchDashboardData(_uiState.value.marketRegion, silent = true)
+            }
+        }
+    }
+
+    private fun fetchDashboardData(market: MarketRegion, silent: Boolean = false) {
         viewModelScope.launch {
             try {
                 val api = RetrofitClient.getInstance(if (market == MarketRegion.US) "US" else "IN")
@@ -90,6 +109,7 @@ class DashboardViewModel : ViewModel() {
                 val positionsNet = try { api.getPositions() } catch (e: Exception) { emptyList() }
                 val vettingNet = try { api.getVetting() } catch (e: Exception) { null }
                 val protectiveOrdersNet = try { api.getPendingOrders() } catch (e: Exception) { emptyList() }
+                val fleetNet = try { api.getFleet() } catch (e: Exception) { null }
                 
                 val apiRange = when(_uiState.value.selectedNavRange) {
                     "1D" -> "1d"
@@ -157,6 +177,8 @@ class DashboardViewModel : ViewModel() {
                     positions = positionsNet,
                     trades = tradesNet,
                     protectiveOrders = protectiveOrdersNet,
+                    fleet = fleetNet,
+                    rawLogs = logsNet,
                     vetting = vettingNet,
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,
@@ -164,12 +186,20 @@ class DashboardViewModel : ViewModel() {
                     agentStatus = status
                 )
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    errorMessage = "Failed to connect to EC2 server: ${e.message}"
-                )
+                // On a silent auto-refresh, keep the last good data on screen —
+                // a transient blip shouldn't blank the dashboard.
+                if (!silent) {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "Failed to connect to server: ${e.message}"
+                    )
+                }
             }
         }
+    }
+
+    companion object {
+        private const val REFRESH_INTERVAL_MS = 15_000L
     }
 
     fun openStockDetails(symbol: String) {

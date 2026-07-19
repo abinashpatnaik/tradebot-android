@@ -126,7 +126,9 @@ fun SignalBadge(action: SignalAction, text: String) {
             text = text.uppercase(),
             color = textColor,
             style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            softWrap = false
         )
     }
 }

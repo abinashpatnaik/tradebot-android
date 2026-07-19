@@ -3,21 +3,21 @@ package com.example.alphatrader.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.alphatrader.theme.BgPrimary
-import com.example.alphatrader.theme.TextSecondary
-import com.example.alphatrader.ui.components.DecisionLogEntry
-import com.example.alphatrader.ui.components.ExecutionHistoryRow
-import com.example.alphatrader.ui.components.SignalAction
-
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.alphatrader.theme.BrandRed
+import com.example.alphatrader.ui.components.FleetHealth
 import com.example.alphatrader.ui.viewmodels.DashboardViewModel
 
 @Composable
@@ -33,57 +33,53 @@ fun LogsScreen(viewModel: DashboardViewModel = viewModel()) {
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 80.dp)
         ) {
-            // 1. System Alerts
+            // 1. Fleet health — container/agent heartbeat status
+            item { FleetHealth(fleet = state.fleet) }
+
+            // 2. Agent logs (most recent first)
             item {
                 Text(
-                    text = "SYSTEM ALERTS",
+                    text = "AGENT LOGS",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 12.dp)
                 )
             }
-            if (state.decisionLogs.isEmpty()) {
+
+            val logs = state.rawLogs.asReversed()
+            if (logs.isEmpty()) {
                 item {
                     Text(
-                        text = "✅ System Healthy - No severe alerts",
+                        text = "No logs yet.",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 16.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 }
             } else {
-                items(state.decisionLogs) { log ->
-                    DecisionLogEntry(
-                        icon = log.icon,
-                        title = log.title,
-                        subtitle = log.subtitle,
-                        timestamp = log.timestamp
-                    )
+                item {
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        logs.take(200).forEach { line ->
+                            val isError = line.contains("ERROR", true) || line.contains("CRITICAL", true)
+                            Text(
+                                text = line,
+                                style = MaterialTheme.typography.bodySmall.copy(
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 11.sp
+                                ),
+                                color = if (isError) BrandRed else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
-            }
-
-            // 2. Execution History
-            item {
-                Text(
-                    text = "EXECUTION HISTORY",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 16.dp, top = 32.dp, bottom = 4.dp)
-                )
-            }
-            
-            val currencySymbol = if (state.marketRegion == com.example.alphatrader.ui.components.MarketRegion.US) "$" else "₹"
-            
-            items(state.executionLogs) { log ->
-                ExecutionHistoryRow(
-                    timestamp = log.timestamp,
-                    ticker = log.ticker,
-                    action = log.action,
-                    entry = log.entry,
-                    exit = log.exit,
-                    pnl = log.pnl,
-                    currencySymbol = currencySymbol
-                )
             }
         }
     }

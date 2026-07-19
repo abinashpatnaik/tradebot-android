@@ -7,27 +7,27 @@ val BgSurface = Color(0xFF161920)
 val BgSurfaceRaised = Color(0xFF1E2128)
 val BgOverlay = Color(0xFF252A34)
 
-val BgPrimaryLight = Color(0xFFF8F9FA)
+val BgPrimaryLight = Color(0xFFEDF0F4)
 val BgSurfaceLight = Color(0xFFFFFFFF)
-val BgSurfaceRaisedLight = Color(0xFFF1F3F5)
+val BgSurfaceRaisedLight = Color(0xFFFFFFFF)
 val BgOverlayLight = Color(0xFFE9ECEF)
 
-val BrandGreen = Color(0xFF00E676)
-val BrandGreenDim = Color(0xFF1A3D2B)
+val BrandGreen = Color(0xFF3FBF87)
+val BrandGreenDim = Color(0xFF17321F)
 val BrandGreenDimLight = Color(0xFFE8F5E9)
 
-val BrandRed = Color(0xFFFF4C4C)
-val BrandRedDim = Color(0xFF3D1A1A)
+val BrandRed = Color(0xFFEC6A6A)
+val BrandRedDim = Color(0xFF361D1D)
 val BrandRedDimLight = Color(0xFFFFEBEE)
 
-val BrandAmber = Color(0xFFFFB020)
+val BrandAmber = Color(0xFFE6A83C)
 val BrandAmberDim = Color(0xFF3D2C0A)
 val BrandAmberDimLight = Color(0xFFFFF8E1)
 
-val BrandBlue = Color(0xFF4A9EFF)
+val BrandBlue = Color(0xFF63A8E6)
 val BrandPurple = Color(0xFF7B61FF)
 
-val TextPrimary = Color(0xFFFFFFFF)
+val TextPrimary = Color(0xFFEEF1F6)
 val TextSecondary = Color(0xFF8B8FA8)
 val TextDisabled = Color(0xFF3E4252)
 
@@ -36,7 +36,8 @@ val TextSecondaryLight = Color(0xFF6C757D)
 val TextDisabledLight = Color(0xFFADB5BD)
 
 val BorderSubtle = Color(0xFF2A2D3A)
+val BorderSubtleLight = Color(0xFFE2E6EC)
 
-val StatusLive = Color(0xFF00E676)
-val StatusClosed = Color(0xFFFF4C4C)
+val StatusLive = Color(0xFF3FBF87)
+val StatusClosed = Color(0xFFEC6A6A)
 val StatusSleeping = Color(0xFF8B8FA8)

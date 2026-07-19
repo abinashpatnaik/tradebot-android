@@ -112,9 +112,15 @@ data class VettedTargets(
     val source: String? = null
 )
 
+// In-session accuracy blocklist entry (e.g. "hit_rate 17% over last 6 sells").
+data class BlocklistInfo(
+    val reason: String? = null
+)
+
 data class VettingResponse(
     val available: Boolean = false,
-    val vetted: VettedTargets? = null
+    val vetted: VettedTargets? = null,
+    val blocklist: Map<String, BlocklistInfo>? = null
 )
 
 // The executor's active protective orders (raw hard stop + trailing gap per
@@ -128,6 +134,20 @@ data class ProtectiveOrderResponse(
     val fractional: Boolean = false
 )
 
+// Container/agent fleet health, from the web /api/fleet endpoint.
+data class FleetAgent(
+    val name: String,
+    val alive: Boolean = false,
+    val status: String? = null,
+    val detail: String? = null,
+    val ts: String? = null
+)
+
+data class FleetResponse(
+    val available: Boolean = false,
+    val agents: List<FleetAgent> = emptyList()
+)
+
 
 interface ApiService {
     @GET("/api/positions")
@@ -138,6 +158,9 @@ interface ApiService {
 
     @GET("/api/pending-orders")
     suspend fun getPendingOrders(): List<ProtectiveOrderResponse>
+
+    @GET("/api/fleet")
+    suspend fun getFleet(): FleetResponse
 
 
     @GET("/api/portfolio")

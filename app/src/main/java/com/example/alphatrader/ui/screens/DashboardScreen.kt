@@ -50,46 +50,25 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
-                // 2. Metrics Grid
+                // 2. Hero card — NAV + inline Cash / Day P&L / Win Rate
                 item {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        state.portfolio?.let { p ->
-                            MetricCard(
-                                variant = MetricVariant.NAV,
-                                label = "NET ASSET VALUE",
-                                value = "$currencySymbol${String.format("%.2f", p.nav)}",
-                                subLabel = "${if (p.dailyPnl >= 0) "+" else ""}$currencySymbol${String.format("%.2f", p.dailyPnl)} (${String.format("%.2f", p.dailyPnlPct)}%) Today",
-                                isPositiveDelta = p.dailyPnl >= 0
-                            )
-                            
-                            MetricCard(
-                                variant = MetricVariant.CASH,
-                                label = "AVAILABLE CASH",
-                                value = "$currencySymbol${String.format("%.2f", p.cash)}",
-                                subLabel = "Intraday BP: $currencySymbol${String.format("%.2f", p.buyingPower)}",
-                                isPositiveDelta = null
-                            )
-                        }
+                    state.portfolio?.let { p ->
+                        HeroCard(
+                            nav = p.nav,
+                            dailyPnl = p.dailyPnl,
+                            dailyPnlPct = p.dailyPnlPct,
+                            cash = p.cash,
+                            winRate = p.winRate,
+                            currencySymbol = currencySymbol
+                        )
                     }
                 }
 
-                // 2b. Live Positions
+                // 2b. Live Positions (with each position's trailing-stop %)
                 item {
                     LivePositions(
                         positions = state.positions,
-                        currencySymbol = currencySymbol
-                    )
-                }
-
-                // 2c. Protective Orders
-                item {
-                    ProtectiveOrders(
-                        orders = state.protectiveOrders,
+                        protectiveOrders = state.protectiveOrders,
                         currencySymbol = currencySymbol
                     )
                 }
@@ -116,11 +95,12 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
-                // 5. Transactions
+                // 5. Transactions (recent — full history is on the Logs tab)
                 item {
                     Transactions(
                         trades = state.trades,
-                        currencySymbol = currencySymbol
+                        currencySymbol = currencySymbol,
+                        maxItems = 8
                     )
                 }
 

@@ -25,6 +25,8 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = TextPrimary,
     onSurface = TextPrimary,
     onSurfaceVariant = TextSecondary,
+    outline = BorderSubtle,
+    outlineVariant = BorderSubtle,
     error = BrandRed
 )
 
@@ -41,6 +43,8 @@ private val LightColorScheme = lightColorScheme(
     onBackground = TextPrimaryLight,
     onSurface = TextPrimaryLight,
     onSurfaceVariant = TextSecondaryLight,
+    outline = BorderSubtleLight,
+    outlineVariant = BorderSubtleLight,
     error = BrandRed
 )
 
