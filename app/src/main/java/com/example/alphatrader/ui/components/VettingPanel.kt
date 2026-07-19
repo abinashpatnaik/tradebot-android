@@ -26,9 +26,11 @@ import com.example.alphatrader.theme.BrandRedDim
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun VettingPanel(vetting: VettingResponse?) {
-    val vetted = vetting?.vetted ?: return
+    val v = vetting ?: return
+    val vetted = v.vetted ?: return
     val approved = vetted.approved ?: emptyList()
     val blocked = vetted.blocked ?: emptyMap()
+    val blocklist = v.blocklist ?: emptyMap()
 
     Column(
         modifier = Modifier
@@ -99,6 +101,35 @@ fun VettingPanel(vetting: VettingResponse?) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = reason,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        }
+
+        // In-session accuracy blocklist (blocked because recent live hit-rate
+        // was too low). Shows even when nothing was blocked by the backtest.
+        if (blocklist.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "BLOCKED IN-SESSION (LOW ACCURACY)",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
+            )
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                blocklist.forEach { (sym, info) ->
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        VetChip(sym, BrandRed, BrandRedDim)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = info.reason ?: "",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.weight(1f)

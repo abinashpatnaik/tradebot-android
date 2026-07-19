@@ -112,9 +112,15 @@ data class VettedTargets(
     val source: String? = null
 )
 
+// In-session accuracy blocklist entry (e.g. "hit_rate 17% over last 6 sells").
+data class BlocklistInfo(
+    val reason: String? = null
+)
+
 data class VettingResponse(
     val available: Boolean = false,
-    val vetted: VettedTargets? = null
+    val vetted: VettedTargets? = null,
+    val blocklist: Map<String, BlocklistInfo>? = null
 )
 
 // The executor's active protective orders (raw hard stop + trailing gap per

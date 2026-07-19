@@ -109,7 +109,10 @@ private fun TransactionRow(t: TradeResponse, currencySymbol: String) {
                 Text(
                     text = t.symbol,
                     style = MaterialTheme.typography.titleMedium,
-                    color = BrandBlue
+                    color = BrandBlue,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 SignalBadge(action = action, text = t.action)
