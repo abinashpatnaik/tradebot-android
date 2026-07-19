@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ import com.example.alphatrader.ui.viewmodels.DashboardViewModel
 @Composable
 fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsState()
+    var selectedFilter by androidx.compose.runtime.saveable.rememberSaveable { androidx.compose.runtime.mutableStateOf("All Signals") }
 
     Box(
         modifier = Modifier
@@ -74,7 +76,7 @@ fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
                 // 2. Signals Filter
                 item {
                     Spacer(modifier = Modifier.height(16.dp))
-                    FilterChipRow()
+                    FilterChipRow(selected = selectedFilter, onSelect = { selectedFilter = it })
                 }
 
                 // 3. Signals Title
@@ -87,8 +89,14 @@ fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
-                // 4. Signals List
-                items(state.signals) { signalResponse ->
+                // 4. Signals List (filtered by the selected chip)
+                val filteredSignals = when (selectedFilter) {
+                    "Buy Zone" -> state.signals.filter { it.signal.equals("BUY", true) }
+                    "Sell Alerts" -> state.signals.filter { it.signal.equals("SELL", true) }
+                    "Gated" -> state.signals.filter { !it.holdReason.isNullOrBlank() }
+                    else -> state.signals
+                }
+                items(filteredSignals) { signalResponse ->
                     val actionEnum = try {
                         SignalAction.valueOf(signalResponse.signal.uppercase())
                     } catch (e: Exception) {

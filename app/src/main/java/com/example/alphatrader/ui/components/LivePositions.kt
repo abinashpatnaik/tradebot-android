@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.example.alphatrader.data.network.PositionResponse
+import com.example.alphatrader.data.network.ProtectiveOrderResponse
+import com.example.alphatrader.theme.BrandAmber
 import com.example.alphatrader.theme.BrandBlue
 import com.example.alphatrader.theme.BrandGreen
 import com.example.alphatrader.theme.BrandRed
@@ -24,8 +26,10 @@ import com.example.alphatrader.theme.BrandRed
 @Composable
 fun LivePositions(
     positions: List<PositionResponse>,
+    protectiveOrders: List<ProtectiveOrderResponse> = emptyList(),
     currencySymbol: String = "$"
 ) {
+    val trailBySymbol = protectiveOrders.associate { it.symbol to it.trailingPct }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,7 +67,7 @@ fun LivePositions(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 positions.forEachIndexed { index, p ->
-                    PositionRow(p, currencySymbol)
+                    PositionRow(p, trailBySymbol[p.symbol], currencySymbol)
                     if (index < positions.size - 1) {
                         HorizontalDivider(
                             color = MaterialTheme.colorScheme.outlineVariant,
@@ -77,7 +81,7 @@ fun LivePositions(
 }
 
 @Composable
-private fun PositionRow(p: PositionResponse, currencySymbol: String) {
+private fun PositionRow(p: PositionResponse, trailPct: Double?, currencySymbol: String) {
     val pnlPositive = p.pnl >= 0
     val pnlColor = if (pnlPositive) BrandGreen else BrandRed
     val pnlIcon = if (pnlPositive) "▲" else "▼"
@@ -123,9 +127,9 @@ private fun PositionRow(p: PositionResponse, currencySymbol: String) {
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "$protLabel $protText",
+                text = "$protLabel $protText" + (trailPct?.let { "  ·  TRAIL ${String.format("%.1f", it * 100)}%" } ?: ""),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = if (trailPct != null && !p.trailingActive) BrandAmber else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

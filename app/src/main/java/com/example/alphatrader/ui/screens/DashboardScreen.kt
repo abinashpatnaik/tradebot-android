@@ -64,18 +64,11 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     }
                 }
 
-                // 2b. Live Positions
+                // 2b. Live Positions (with each position's trailing-stop %)
                 item {
                     LivePositions(
                         positions = state.positions,
-                        currencySymbol = currencySymbol
-                    )
-                }
-
-                // 2c. Protective Orders
-                item {
-                    ProtectiveOrders(
-                        orders = state.protectiveOrders,
+                        protectiveOrders = state.protectiveOrders,
                         currencySymbol = currencySymbol
                     )
                 }

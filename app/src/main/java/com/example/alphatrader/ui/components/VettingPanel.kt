@@ -23,6 +23,7 @@ import com.example.alphatrader.theme.BrandRedDim
  * Today's stock vetting: the symbols approved to trade, and the ones blocked
  * (with the backtest/liquidity reason). Mirrors the web "Stock Vetting" panel.
  */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun VettingPanel(vetting: VettingResponse?) {
     val vetted = vetting?.vetted ?: return
@@ -68,12 +69,12 @@ fun VettingPanel(vetting: VettingResponse?) {
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         } else {
-            Row(
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 approved.forEach { sym -> VetChip(sym, BrandGreen, BrandGreenDim) }
             }

@@ -9,6 +9,7 @@ import com.example.alphatrader.data.network.AnalyticsResponse
 import com.example.alphatrader.data.network.NavHistoryItem
 import com.example.alphatrader.data.network.PositionResponse
 import com.example.alphatrader.data.network.ProtectiveOrderResponse
+import com.example.alphatrader.data.network.FleetResponse
 import com.example.alphatrader.data.network.StockDetailsResponse
 import com.example.alphatrader.data.network.TradeResponse
 import com.example.alphatrader.data.network.VettingResponse
@@ -50,6 +51,8 @@ data class DashboardState(
     val positions: List<PositionResponse> = emptyList(),
     val trades: List<TradeResponse> = emptyList(),
     val protectiveOrders: List<ProtectiveOrderResponse> = emptyList(),
+    val fleet: FleetResponse? = null,
+    val rawLogs: List<String> = emptyList(),
     val vetting: VettingResponse? = null,
     val tickers: List<TickerItem> = emptyList(),
     val executionLogs: List<ExecutionHistoryItem> = emptyList(),
@@ -106,6 +109,7 @@ class DashboardViewModel : ViewModel() {
                 val positionsNet = try { api.getPositions() } catch (e: Exception) { emptyList() }
                 val vettingNet = try { api.getVetting() } catch (e: Exception) { null }
                 val protectiveOrdersNet = try { api.getPendingOrders() } catch (e: Exception) { emptyList() }
+                val fleetNet = try { api.getFleet() } catch (e: Exception) { null }
                 
                 val apiRange = when(_uiState.value.selectedNavRange) {
                     "1D" -> "1d"
@@ -173,6 +177,8 @@ class DashboardViewModel : ViewModel() {
                     positions = positionsNet,
                     trades = tradesNet,
                     protectiveOrders = protectiveOrdersNet,
+                    fleet = fleetNet,
+                    rawLogs = logsNet,
                     vetting = vettingNet,
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,

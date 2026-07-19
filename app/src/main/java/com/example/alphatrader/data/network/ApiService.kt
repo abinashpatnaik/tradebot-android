@@ -128,6 +128,20 @@ data class ProtectiveOrderResponse(
     val fractional: Boolean = false
 )
 
+// Container/agent fleet health, from the web /api/fleet endpoint.
+data class FleetAgent(
+    val name: String,
+    val alive: Boolean = false,
+    val status: String? = null,
+    val detail: String? = null,
+    val ts: String? = null
+)
+
+data class FleetResponse(
+    val available: Boolean = false,
+    val agents: List<FleetAgent> = emptyList()
+)
+
 
 interface ApiService {
     @GET("/api/positions")
@@ -138,6 +152,9 @@ interface ApiService {
 
     @GET("/api/pending-orders")
     suspend fun getPendingOrders(): List<ProtectiveOrderResponse>
+
+    @GET("/api/fleet")
+    suspend fun getFleet(): FleetResponse
 
 
     @GET("/api/portfolio")
