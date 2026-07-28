@@ -57,9 +57,10 @@ class NotificationHelper(private val context: Context) {
     }
 
     fun notifyTrade(market: String, symbol: String, action: String, price: Double) {
+        val currencySymbol = if (market == "US") "$" else "₹"
         val notification = NotificationCompat.Builder(context, CHANNEL_ID_TRADES)
             .setContentTitle("Trade Executed ($market)")
-            .setContentText("$action $symbol at $$price")
+            .setContentText("$action $symbol at $currencySymbol${String.format("%.2f", price)}")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
