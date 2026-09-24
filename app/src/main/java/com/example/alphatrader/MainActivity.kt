@@ -191,7 +191,7 @@ class MainActivity : FragmentActivity() {
         val biometricPrompt = BiometricPrompt(this, executor, callback)
 
         val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("AlphaTrader")
+            .setTitle("AP Trade")
             .setSubtitle("Authenticate to access your portfolio")
             .setAllowedAuthenticators(
                 BiometricManager.Authenticators.BIOMETRIC_STRONG or

@@ -49,14 +49,15 @@ fun AuthScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "⚡",
-                color = BrandGreen,
-                style = MaterialTheme.typography.displayLarge
+            Icon(
+                painter = androidx.compose.ui.res.painterResource(id = com.example.alphatrader.R.drawable.ic_ap_trade_mark),
+                contentDescription = null,
+                tint = BrandGreen,
+                modifier = Modifier.size(56.dp)
             )
             Spacer(modifier = Modifier.height(Spacing.sm))
             Text(
-                text = "AlphaTrader",
+                text = "AP Trade",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground

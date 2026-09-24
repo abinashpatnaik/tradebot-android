@@ -59,14 +59,15 @@ fun AlphaTopAppBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Row(modifier = Modifier.clickable { onMarketToggle() }, verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "⚡",
-                    color = BrandGreen,
-                    style = MaterialTheme.typography.headlineLarge
+                Icon(
+                    painter = androidx.compose.ui.res.painterResource(id = com.example.alphatrader.R.drawable.ic_ap_trade_mark),
+                    contentDescription = null,
+                    tint = BrandGreen,
+                    modifier = Modifier.size(26.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Alpha",
+                    text = "AP Trade",
                     color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.titleLarge
                 )
