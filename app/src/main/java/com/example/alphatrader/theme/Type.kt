@@ -57,3 +57,27 @@ val MonoTextStyle = TextStyle(
     fontSize = 12.sp,
     lineHeight = 18.sp,
 )
+
+// Tabular-figure styles for money/percent values — headline weight but
+// monospace digits so stacked numbers (positions list, ticker tape) align
+// on their decimal points instead of jittering with proportional digits.
+val NumericLarge = TextStyle(
+    fontFamily = FontFamily.Monospace,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 28.sp,
+    lineHeight = 34.sp,
+)
+
+val NumericMedium = TextStyle(
+    fontFamily = FontFamily.Monospace,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 16.sp,
+    lineHeight = 22.sp,
+)
+
+val NumericSmall = TextStyle(
+    fontFamily = FontFamily.Monospace,
+    fontWeight = FontWeight.Medium,
+    fontSize = 13.sp,
+    lineHeight = 18.sp,
+)

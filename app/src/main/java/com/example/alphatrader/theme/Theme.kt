@@ -7,6 +7,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
@@ -19,12 +20,14 @@ private val DarkColorScheme = darkColorScheme(
     background = BgPrimary,
     surface = BgSurface,
     surfaceVariant = BgSurfaceRaised,
-    onPrimary = TextPrimary,
+    onPrimary = Color.Black,
     onSecondary = TextPrimary,
     onTertiary = TextPrimary,
     onBackground = TextPrimary,
     onSurface = TextPrimary,
     onSurfaceVariant = TextSecondary,
+    outline = BorderSubtle,
+    outlineVariant = BorderSubtle,
     error = BrandRed
 )
 
@@ -35,12 +38,14 @@ private val LightColorScheme = lightColorScheme(
     background = BgPrimaryLight,
     surface = BgSurfaceLight,
     surfaceVariant = BgSurfaceRaisedLight,
-    onPrimary = TextPrimaryLight,
+    onPrimary = Color.Black,
     onSecondary = TextPrimaryLight,
     onTertiary = TextPrimaryLight,
     onBackground = TextPrimaryLight,
     onSurface = TextPrimaryLight,
     onSurfaceVariant = TextSecondaryLight,
+    outline = BorderSubtleLight,
+    outlineVariant = BorderSubtleLight,
     error = BrandRed
 )
 

@@ -33,9 +33,9 @@ fun SignalRow(signal: SignalItem, currencySymbol: String = "$", onClick: () -> U
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
-            .padding(16.dp),
+            .padding(horizontal = Spacing.lg, vertical = Spacing.sm)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(Radius.md))
+            .padding(Spacing.lg),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         // Top Row: Ticker & Price
@@ -47,12 +47,13 @@ fun SignalRow(signal: SignalItem, currencySymbol: String = "$", onClick: () -> U
             Text(
                 text = signal.ticker,
                 color = BrandBlue,
+                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
                 text = "$currencySymbol${String.format("%.2f", signal.price)}",
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleMedium
+                style = NumericMedium
             )
         }
 

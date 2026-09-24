@@ -32,8 +32,8 @@ fun MetricCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .height(108.dp)
+            .clip(RoundedCornerShape(Radius.lg))
             .background(MaterialTheme.colorScheme.surface)
             .drawBehind {
                 drawLine(
@@ -43,8 +43,8 @@ fun MetricCard(
                     strokeWidth = 2.dp.toPx()
                 )
             }
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
-            .padding(16.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(Radius.lg))
+            .padding(Spacing.lg)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -53,15 +53,15 @@ fun MetricCard(
             Text(
                 text = label.uppercase(),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.labelMedium
             )
-            
+
             Text(
                 text = value,
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.displayLarge
+                style = NumericLarge
             )
-            
+
             val subLabelColor = when (isPositiveDelta) {
                 true -> BrandGreen
                 false -> BrandRed
@@ -72,7 +72,7 @@ fun MetricCard(
                 false -> "▼"
                 null -> ""
             }
-            
+
             Text(
                 text = if (icon.isNotEmpty()) "$subLabel $icon" else subLabel,
                 color = subLabelColor,

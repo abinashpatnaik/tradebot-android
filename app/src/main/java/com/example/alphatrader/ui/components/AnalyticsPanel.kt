@@ -57,7 +57,7 @@ fun AnalyticsPanel(
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth()
                 .height(140.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(Radius.lg))
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = androidx.compose.ui.Alignment.Center
         ) {
@@ -118,7 +118,7 @@ fun AnalyticsCard(label: String, value: String, valueColor: androidx.compose.ui.
         modifier = Modifier
             .width(100.dp)
             .height(80.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(Radius.md))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(12.dp),
         verticalArrangement = Arrangement.SpaceBetween

@@ -3,6 +3,7 @@ package com.example.alphatrader.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alphatrader.data.network.PortfolioResponse
+import com.example.alphatrader.data.network.PositionResponse
 import com.example.alphatrader.data.network.RetrofitClient
 import com.example.alphatrader.data.network.SignalResponse
 import com.example.alphatrader.data.network.AnalyticsResponse
@@ -39,6 +40,7 @@ data class DashboardState(
     val marketRegion: MarketRegion = MarketRegion.US,
     val agentStatus: AgentStatus = AgentStatus.LIVE,
     val portfolio: PortfolioResponse? = null,
+    val positions: List<PositionResponse> = emptyList(),
     val analytics: AnalyticsResponse? = null,
     val selectedNavRange: String = "1D",
     val navHistory: List<NavHistoryItem> = emptyList(),
@@ -73,6 +75,7 @@ class DashboardViewModel : ViewModel() {
                 val api = RetrofitClient.getInstance(if (market == MarketRegion.US) "US" else "IN")
                 
                 val portfolio = api.getPortfolio()
+                val positionsNet = try { api.getPositions() } catch (e: Exception) { emptyList() }
                 val signalsNet = api.getSignals()
                 val tradesNet = api.getTrades()
                 val logsNet = api.getLogs()
@@ -140,6 +143,7 @@ class DashboardViewModel : ViewModel() {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     portfolio = portfolio,
+                    positions = positionsNet,
                     analytics = analyticsNet,
                     navHistory = navHistoryNet,
                     signals = signalsNet,

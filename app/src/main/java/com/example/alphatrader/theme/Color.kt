@@ -2,41 +2,55 @@ package com.example.alphatrader.theme
 
 import androidx.compose.ui.graphics.Color
 
-val BgPrimary = Color(0xFF0D0F14)
-val BgSurface = Color(0xFF161920)
-val BgSurfaceRaised = Color(0xFF1E2128)
-val BgOverlay = Color(0xFF252A34)
+// Refined dark fintech palette — same token names as before so every
+// existing screen/component keeps working, values deepened and given more
+// separation between elevation steps for a richer, less flat look.
+val BgPrimary = Color(0xFF0A0C11)
+val BgSurface = Color(0xFF12151D)
+val BgSurfaceRaised = Color(0xFF1A1E28)
+val BgOverlay = Color(0xFF242836)
 
-val BgPrimaryLight = Color(0xFFF8F9FA)
+val BgPrimaryLight = Color(0xFFF7F8FA)
 val BgSurfaceLight = Color(0xFFFFFFFF)
-val BgSurfaceRaisedLight = Color(0xFFF1F3F5)
-val BgOverlayLight = Color(0xFFE9ECEF)
+val BgSurfaceRaisedLight = Color(0xFFF0F2F5)
+val BgOverlayLight = Color(0xFFE6E9ED)
 
-val BrandGreen = Color(0xFF00E676)
-val BrandGreenDim = Color(0xFF1A3D2B)
-val BrandGreenDimLight = Color(0xFFE8F5E9)
+val BrandGreen = Color(0xFF00E08A)
+val BrandGreenDim = Color(0xFF122B22)
+val BrandGreenDimLight = Color(0xFFE3F6EC)
 
-val BrandRed = Color(0xFFFF4C4C)
-val BrandRedDim = Color(0xFF3D1A1A)
-val BrandRedDimLight = Color(0xFFFFEBEE)
+val BrandRed = Color(0xFFFF5C5C)
+val BrandRedDim = Color(0xFF2E1518)
+val BrandRedDimLight = Color(0xFFFDECEC)
 
 val BrandAmber = Color(0xFFFFB020)
-val BrandAmberDim = Color(0xFF3D2C0A)
-val BrandAmberDimLight = Color(0xFFFFF8E1)
+val BrandAmberDim = Color(0xFF332508)
+val BrandAmberDimLight = Color(0xFFFFF6E0)
 
-val BrandBlue = Color(0xFF4A9EFF)
-val BrandPurple = Color(0xFF7B61FF)
+val BrandBlue = Color(0xFF4DA3FF)
+val BrandBlueDim = Color(0xFF122335)
+val BrandBlueDimLight = Color(0xFFE7F1FF)
 
-val TextPrimary = Color(0xFFFFFFFF)
-val TextSecondary = Color(0xFF8B8FA8)
-val TextDisabled = Color(0xFF3E4252)
+val BrandPurple = Color(0xFF8B7BFF)
 
-val TextPrimaryLight = Color(0xFF212529)
-val TextSecondaryLight = Color(0xFF6C757D)
-val TextDisabledLight = Color(0xFFADB5BD)
+val TextPrimary = Color(0xFFF5F6FA)
+val TextSecondary = Color(0xFF8E93A8)
+val TextDisabled = Color(0xFF454A5C)
 
-val BorderSubtle = Color(0xFF2A2D3A)
+val TextPrimaryLight = Color(0xFF14161C)
+val TextSecondaryLight = Color(0xFF676C7E)
+val TextDisabledLight = Color(0xFFAEB2BE)
 
-val StatusLive = Color(0xFF00E676)
-val StatusClosed = Color(0xFFFF4C4C)
-val StatusSleeping = Color(0xFF8B8FA8)
+val BorderSubtle = Color(0xFF242836)
+val BorderSubtleLight = Color(0xFFE1E4E9)
+
+val StatusLive = BrandGreen
+val StatusClosed = BrandRed
+val StatusSleeping = TextSecondary
+
+// Position protection status — distinct from generic P&L green/red so
+// "am I protected" reads as its own signal, not just another win/loss color.
+val ProtectionArmed = BrandBlue      // trailing stop active, profit locked
+val ProtectionArmedDim = BrandBlueDim
+val ProtectionBase = BrandAmber      // only the original hard stop protects this
+val ProtectionBaseDim = BrandAmberDim

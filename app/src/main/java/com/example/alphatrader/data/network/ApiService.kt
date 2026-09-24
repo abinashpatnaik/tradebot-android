@@ -82,11 +82,47 @@ data class NavHistoryItem(
     val nav: Double
 )
 
+// Shape the trail schedule comes back in from realProtectiveStop() on the
+// server: armed positions carry index/count/gainFromHigh/nextAt/nextGapPct,
+// unarmed ones carry only activatesAt. All fields optional since a given
+// response only ever populates one branch.
+data class TrailTier(
+    val index: Int? = null,
+    val count: Int? = null,
+    val gainFromHigh: Double? = null,
+    val nextAt: Double? = null,
+    val nextGapPct: Double? = null,
+    val activatesAt: Double? = null
+)
+
+data class PositionResponse(
+    val symbol: String,
+    val quantity: Double,
+    val entryPrice: Double,
+    val stopBasisEntry: Double,
+    val currentPrice: Double,
+    val marketValue: Double,
+    val pnl: Double,
+    val pnlPct: Double,
+    val stopLoss: Double,
+    val takeProfit: Double,
+    val trailingStop: Double,
+    val trailingActive: Boolean,
+    val trailingPct: Double,
+    val trailBaseGapPct: Double,
+    val trailTier: TrailTier?,
+    val allocation: Double,
+    val strategy: String
+)
+
 
 
 interface ApiService {
     @GET("/api/portfolio")
     suspend fun getPortfolio(): PortfolioResponse
+
+    @GET("/api/positions")
+    suspend fun getPositions(): List<PositionResponse>
 
     @GET("/api/signals")
     suspend fun getSignals(): List<SignalResponse>

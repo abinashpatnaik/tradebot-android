@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alphatrader.theme.BgPrimary
 import com.example.alphatrader.theme.BrandGreen
 import com.example.alphatrader.theme.TextSecondary
+import com.example.alphatrader.theme.Spacing
 import com.example.alphatrader.ui.components.*
 import com.example.alphatrader.ui.viewmodels.DashboardViewModel
 
@@ -57,7 +58,7 @@ fun SignalsScreen(viewModel: DashboardViewModel = viewModel()) {
                         text = "AGENT INTELLIGENCE",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp)
+                        modifier = Modifier.padding(start = Spacing.lg, top = Spacing.xl, bottom = Spacing.xs)
                     )
                     IntelligenceMetricsRow(
                         winRate = winRate,

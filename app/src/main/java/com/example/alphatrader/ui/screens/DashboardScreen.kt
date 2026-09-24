@@ -3,10 +3,8 @@ package com.example.alphatrader.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,9 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.alphatrader.theme.BgPrimary
 import com.example.alphatrader.theme.BrandGreen
-import com.example.alphatrader.theme.TextSecondary
+import com.example.alphatrader.theme.Spacing
 import com.example.alphatrader.ui.components.*
 import com.example.alphatrader.ui.viewmodels.DashboardViewModel
 
@@ -36,10 +33,9 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
             }
         } else {
             val currencySymbol = if (state.marketRegion == MarketRegion.US) "$" else "₹"
-            
+
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 item {
@@ -50,13 +46,13 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
-                // 2. Metrics Grid
+                // Account headline — NAV + cash, the two top-line numbers.
                 item {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                            .padding(Spacing.lg),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.md)
                     ) {
                         state.portfolio?.let { p ->
                             MetricCard(
@@ -66,7 +62,7 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                                 subLabel = "${if (p.dailyPnl >= 0) "+" else ""}$currencySymbol${String.format("%.2f", p.dailyPnl)} (${String.format("%.2f", p.dailyPnlPct)}%) Today",
                                 isPositiveDelta = p.dailyPnl >= 0
                             )
-                            
+
                             MetricCard(
                                 variant = MetricVariant.CASH,
                                 label = "AVAILABLE CASH",
@@ -78,7 +74,18 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     }
                 }
 
-                // 3. Portfolio Chart
+                // Open positions — what the bot is actually doing right now,
+                // and whether each one is protected by an armed trailing
+                // stop or still just the original hard stop.
+                item {
+                    PositionsSection(
+                        positions = state.positions,
+                        currencySymbol = currencySymbol,
+                        onPositionClick = { viewModel.openStockDetails(it) }
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.lg))
+                }
+
                 item {
                     PortfolioChartCard(
                         history = state.navHistory,
@@ -87,7 +94,6 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                     )
                 }
 
-                // 4. Analytics Panel
                 item {
                     val risk = state.analytics?.risk
                     val winRate = state.portfolio?.winRate ?: 0.0
@@ -99,7 +105,6 @@ fun DashboardScreen(viewModel: DashboardViewModel = viewModel()) {
                         winRate = winRate
                     )
                 }
-
             }
         }
     }

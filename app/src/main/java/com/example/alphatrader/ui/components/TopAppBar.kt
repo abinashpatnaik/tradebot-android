@@ -48,9 +48,9 @@ fun AlphaTopAppBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(68.dp)
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = Spacing.lg),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -155,10 +155,10 @@ fun StatusBadge(status: AgentStatus, text: String) {
 
     Row(
         modifier = Modifier
-            .height(22.dp)
-            .clip(RoundedCornerShape(11.dp))
+            .height(24.dp)
+            .clip(RoundedCornerShape(Radius.pill))
             .background(bgColor)
-            .padding(horizontal = 8.dp),
+            .padding(horizontal = Spacing.sm),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (status == AgentStatus.LIVE || status == AgentStatus.CLOSED) {

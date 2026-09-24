@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.alphatrader.theme.BgPrimary
 import com.example.alphatrader.theme.TextSecondary
+import com.example.alphatrader.theme.Spacing
 import com.example.alphatrader.ui.components.DecisionLogEntry
 import com.example.alphatrader.ui.components.ExecutionHistoryRow
 import com.example.alphatrader.ui.components.SignalAction
@@ -39,7 +40,7 @@ fun LogsScreen(viewModel: DashboardViewModel = viewModel()) {
                     text = "SYSTEM ALERTS",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 16.dp, top = 24.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(start = Spacing.lg, top = Spacing.xl, bottom = Spacing.xs)
                 )
             }
             if (state.decisionLogs.isEmpty()) {

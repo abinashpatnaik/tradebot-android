@@ -44,34 +44,44 @@ fun TickerTape(tickers: List<TickerItem>, currencySymbol: String = "$", onTicker
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(36.dp)
+            .height(38.dp)
             .background(MaterialTheme.colorScheme.surface)
             .horizontalScroll(scrollState),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Repeat list to simulate infinite loop
         val displayTickers = if (tickers.isEmpty()) emptyList() else (1..10).flatMap { tickers }
-        
+
         displayTickers.forEach { ticker ->
             val isUp = ticker.changePct >= 0
             val color = if (isUp) BrandGreen else BrandRed
             val icon = if (isUp) "▲" else "▼"
-            Row(modifier = Modifier.clickable { onTickerClick(ticker.symbol) }) {
-                Spacer(modifier = Modifier.width(16.dp))
+            Row(
+                modifier = Modifier.clickable { onTickerClick(ticker.symbol) },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(Spacing.lg))
                 Text(
-                    text = "${ticker.symbol} $currencySymbol${String.format("%.2f", ticker.price)}",
+                    text = ticker.symbol,
                     color = MaterialTheme.colorScheme.onSurface,
+                    style = MonoTextStyle,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(Spacing.xs))
+                Text(
+                    text = "$currencySymbol${String.format("%.2f", ticker.price)}",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MonoTextStyle
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(Spacing.sm))
                 Text(
                     text = "$icon ${String.format("%.2f", Math.abs(ticker.changePct))}%",
                     color = color,
                     style = MonoTextStyle
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(Spacing.lg))
                 Text(
-                    text = "|",
+                    text = "•",
                     color = MaterialTheme.colorScheme.outlineVariant,
                     style = MonoTextStyle
                 )

@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.alphatrader.theme.BrandGreen
 import com.example.alphatrader.theme.BrandRed
+import com.example.alphatrader.theme.Spacing
 
 @Composable
 fun BiometricLockScreen(
@@ -57,7 +58,7 @@ fun BiometricLockScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier.padding(Spacing.xxl)
         ) {
             // App branding
             Text(
