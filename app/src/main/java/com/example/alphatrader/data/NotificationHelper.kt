@@ -49,7 +49,7 @@ class NotificationHelper(private val context: Context) {
 
     fun buildForegroundNotification(statusText: String): Notification {
         return NotificationCompat.Builder(context, CHANNEL_ID_FOREGROUND)
-            .setContentTitle("AlphaTrader")
+            .setContentTitle("AP Trade")
             .setContentText(statusText)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setOngoing(true)
