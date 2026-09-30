@@ -23,7 +23,7 @@ fun AuthScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("AlphaTrader Login") })
+            TopAppBar(title = { Text("AP Trade Login") })
         }
     ) { padding ->
         Column(

@@ -61,7 +61,7 @@ fun BiometricLockScreen(
         ) {
             // App branding
             Text(
-                text = "AlphaTrader",
+                text = "AP Trade",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 color = BrandGreen,
