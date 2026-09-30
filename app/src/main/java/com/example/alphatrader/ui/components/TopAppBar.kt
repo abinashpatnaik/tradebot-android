@@ -42,6 +42,7 @@ fun AlphaTopAppBar(
     marketRegion: MarketRegion,
     onMarketToggle: () -> Unit,
     portfolio: PortfolioResponse?,
+    isStale: Boolean = false,
     themeMode: ThemeMode = ThemeMode.SYSTEM,
     onThemeToggle: () -> Unit = {}
 ) {
@@ -125,6 +126,11 @@ fun AlphaTopAppBar(
                 StatusBadge(status = agentStatusEnum, text = agentText)
             } else {
                 StatusBadge(status = AgentStatus.SLEEPING, text = "Connecting...")
+            }
+
+            if (isStale) {
+                Spacer(modifier = Modifier.height(4.dp))
+                StatusBadge(status = AgentStatus.CLOSED, text = "⚠ Not syncing")
             }
         }
     }

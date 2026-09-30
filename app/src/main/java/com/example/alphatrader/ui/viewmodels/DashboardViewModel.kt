@@ -1,5 +1,6 @@
 package com.example.alphatrader.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.alphatrader.data.network.PortfolioResponse
@@ -60,11 +61,22 @@ data class DashboardState(
     val errorMessage: String? = null,
     val selectedStockSymbol: String? = null,
     val stockDetails: StockDetailsResponse? = null,
-    val isStockDetailsLoading: Boolean = false
+    val isStockDetailsLoading: Boolean = false,
+    // A silent auto-refresh swallows its error so a single transient blip
+    // doesn't blank the dashboard (see fetchDashboardData). That also means
+    // a PERSISTENT failure (server unreachable, auth broken) was previously
+    // invisible -- the screen just sat on stale data forever with no sign
+    // anything was wrong. isStale flips on after several auto-refreshes in
+    // a row fail, so a real outage is visible instead of looking "frozen".
+    val lastSyncedAt: Long? = null,
+    val isStale: Boolean = false
 )
 
 class DashboardViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(DashboardState())
+    // Consecutive silent-refresh failures. Reset on any success; after
+    // STALE_AFTER_FAILURES in a row, the UI surfaces isStale.
+    private var consecutiveSilentFailures = 0
     val uiState: StateFlow<DashboardState> = _uiState.asStateFlow()
 
     init {
@@ -168,6 +180,7 @@ class DashboardViewModel : ViewModel() {
                     }
                 }.takeLast(20).reversed()
                 
+                consecutiveSilentFailures = 0
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     portfolio = portfolio,
@@ -183,23 +196,38 @@ class DashboardViewModel : ViewModel() {
                     tickers = mappedTickers,
                     decisionLogs = mappedDecisionLogs,
                     executionLogs = mappedExecutionLogs,
-                    agentStatus = status
+                    agentStatus = status,
+                    lastSyncedAt = System.currentTimeMillis(),
+                    isStale = false
                 )
             } catch (e: Exception) {
+                Log.w(TAG, "fetchDashboardData failed (market=$market, silent=$silent)", e)
                 // On a silent auto-refresh, keep the last good data on screen —
-                // a transient blip shouldn't blank the dashboard.
+                // a transient blip shouldn't blank the dashboard. But if
+                // refreshes keep failing, that stale data looks identical to
+                // live data with no indication anything's wrong -- surface
+                // isStale once failures pile up instead of staying silent
+                // forever.
                 if (!silent) {
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         errorMessage = "Failed to connect to server: ${e.message}"
                     )
+                } else {
+                    consecutiveSilentFailures++
+                    if (consecutiveSilentFailures >= STALE_AFTER_FAILURES) {
+                        _uiState.value = _uiState.value.copy(isStale = true)
+                    }
                 }
             }
         }
     }
 
     companion object {
+        private const val TAG = "DashboardViewModel"
         private const val REFRESH_INTERVAL_MS = 15_000L
+        // 3 misses at the 15s interval = 45s+ with no successful refresh.
+        private const val STALE_AFTER_FAILURES = 3
     }
 
     fun openStockDetails(symbol: String) {

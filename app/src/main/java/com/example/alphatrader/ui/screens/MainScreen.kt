@@ -55,6 +55,7 @@ fun MainScreen(
                 marketRegion = state.marketRegion,
                 onMarketToggle = { viewModel.toggleMarket() },
                 portfolio = state.portfolio,
+                isStale = state.isStale,
                 themeMode = themeMode,
                 onThemeToggle = {
                     val nextMode = when (themeMode) {
